@@ -1,0 +1,147 @@
+/*login.html */
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-container {
+  background: white;
+  padding: 2em;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo-container {
+  text-align: center; /* Centrarea siglei */
+  margin-bottom: 20px; /* Spațiu sub siglă */
+}
+
+.upt-logo {
+  width: 150px; /* sau orice dimensiune dorită */
+  height: auto; /* menține proporția siglei */
+}
+
+
+.login-title {
+  color: #333;
+  text-align: center;
+}
+
+.title-highlight {
+  color: #2e3192;
+}
+
+.login-subtitle {
+  text-align: center;
+  color: #666;
+}
+
+.form-group {
+  margin-bottom: 1em;
+}
+
+.form-group label {
+  display: block;
+  color: #666;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.5em;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.login-button {
+  width: 100%;
+  padding: 1em;
+  border: none;
+  background-color: #2e3192;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.login-button:hover {
+  background-color: #2e3192;
+}
+
+.forgot-password {
+  display: block;
+  text-align: center;
+  margin-top: 1em;
+  color: #2e3192;
+  text-decoration: none;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 2em;
+  color: #999;
+}
+
+
+/*register.html */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f7f7f7;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.register-container {
+  max-width: 500px; /* Limitați lățimea containerului */
+  margin: 0 auto; /* Centrați formularul pe pagina */
+  padding: 2rem; /* Adăugați un spațiu în jurul formularului */
+  background: #f9f9f9; /* Schimbați culoarea de fundal */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Adăugați umbre pentru adâncime */
+}
+
+.register-form {
+  margin: 2rem 0; /* Adăugați spațiu deasupra și dedesubtul formularului */
+}
+
+.form-group {
+  margin-bottom: 1rem; /* Adăugați spațiu între grupurile de formular */
+}
+
+.form-group label {
+  display: block; /* Asigurați-vă că eticheta este pe propria linie */
+  margin-bottom: .5rem; /* Spațiu sub etichetă */
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="tel"],
+.form-group select {
+  width: 100%; /* Lățime completă pentru a se potrivi containerului */
+  padding: .5rem; /* Spațiu în interiorul câmpurilor de input */
+  border: 1px solid #ccc; /* Bordură subtilă */
+  border-radius: .25rem; /* Margini rotunjite */
+}
+
+button#register-button {
+  width: 100%; /* Lățime completă pentru a se potrivi containerului */
+  padding: 1rem; /* Spațiu în interiorul butonului */
+  border: none; /* Eliminați bordura implicită */
+  background-color: #0056b3; /* Culoarea de fundal a butonului */
+  color: white; /* Textul butonului să fie alb */
+  border-radius: .25rem; /* Margini rotunjite */
+  cursor: pointer; /* Cursor de mână când treceți peste buton */
+  font-size: 1rem; /* Măriți dimensiunea fontului */
+}
+
+button#register-button:hover {
+  background-color: #003d82; /* Schimbați culoarea de fundal când treceți peste buton */
+}

@@ -1,0 +1,72 @@
+<!-- register.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Form</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="register-container">
+    <div class="register-form">
+        <h1>Înregistrare utilizator</h1>
+        <form id="register-form">
+            <div class="form-group">
+                <label for="first-name">Nume</label>
+                <input type="text" id="first-name" name="firstName" required>
+                <label for="last-name">Prenume</label>
+                <input type="text" id="last-name" name="lastName" required>
+                <label for="register-email">Adresa de email</label>
+                <input type="email" id="register-email" name="email" autocomplete="off" required>
+            </div>
+            <div class="form-group">
+                <label for="register-password">Parola</label>
+                <input type="password" id="register-password" name="password" autocomplete="new-password" required>
+            </div>
+            <div class="form-group">
+                <label for="role">Rol</label>
+                <select id="role" name="role" required>
+                  <option value="" selected disabled hidden>Selectează rol</option>
+                  <option value="student">Student</option>
+                  <option value="profesor">Profesor</option>
+                  <option value="secretar">Secretar</option>
+                  <option value="administrator">Administrator</option>
+                </select>
+              </div>
+              <div id="additional-fields-student" class="form-group additional-fields" style="display:none" >
+                <label for="student-number">Număr matricol</label>
+                <input type="text" id="student-number" name="studentNumber" required>
+
+                <label for="study-year">Anul de studiu</label>
+                <input type="number" id="study-year" name="studyYear" min="1" max="4" required>
+            </div>
+
+            <div id="additional-fields-admin" class="form-group additional-fields" style="display:none" >
+                <label for="admin-phone">Număr de telefon</label>
+                <input type="tel" id="admin-phone" name="adminPhone" pattern="\d{10}" maxlength="10" required>
+            </div>
+
+            <div id="additional-fields-profesor" class="form-group additional-fields" style="display:none" >
+                <label for="prof-departament">Departament</label>
+                <select id="prof-departament" name="profDepartament" required>
+                    <option value="">Selectează un departament</option>
+                </select>
+            </div>
+
+            <div id="additional-fields-secretar" class="form-group additional-fields" style="display:none" >
+                <label for="secretar-departament">Departament</label>
+                <select id="secretar-departament" name="secretarDepartament" required>
+                    <option value="">Selectează un departament</option>
+                </select>
+            </div>
+            
+            <button type="button" id="register-button">Finalizare</button>
+        </form>
+    </div>
+</div>
+
+<script type="module" src="js/register.js"></script>
+</body>
+</html>
