@@ -1,0 +1,42 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .dashboard {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+  
+  .sidebar {
+    background-color: #003d82; 
+    color: white;
+    padding: 15px;
+    min-width: 250px;
+    height: 100vh; /* Înălțimea completă a ecranului */
+    box-sizing: border-box; /* Include padding în width */
+  }
+  
+  .nav-menu a {
+    display: block;
+    color: white;
+    padding: 10px 0;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .nav-menu a:hover {
+    background-color:#0056b3;
+  }
+  
+  .main-content {
+    flex-grow: 1;
+    background-color: #f4f4f4;
+    padding: 20px;
+  }
+  
+  #user-name {
+    text-align: center;
+    font-style: italic;
+}

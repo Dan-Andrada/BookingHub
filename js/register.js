@@ -1,5 +1,9 @@
 // js/register.js
-import { auth, database, analytics, createUserWithEmailAndPassword, ref, set, get } from './firebaseConfig.js';
+import { auth, database, analytics, ref, set, get } from './firebaseConfig.js';
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-functions.js";
+
+const functions = getFunctions(auth.app);
+const createUser = httpsCallable(functions, 'createUser');
 
 const registerForm = document.getElementById('register-form');
 const registerButton = document.getElementById('register-button');
@@ -63,6 +67,117 @@ function hideAdditionalFields() {
 
 registerForm.addEventListener('reset', hideAdditionalFields);  
 
+function handleStudentRole(email, password, firstName, lastName) {
+    const studentNumber = document.getElementById('student-number').value;
+    const studyYear = document.getElementById('study-year').value;
+
+    if (!studentNumber || !studyYear || studyYear < 1 || studyYear > 4) {
+        alert('Please enter a valid student number and study year (1-4).');
+        return;
+    }
+
+    const roleSpecificInfo = {
+        studentNumber: studentNumber,
+        studyYear: studyYear
+    };
+
+    createUserAndSaveData(email, password, firstName, lastName, 'student', roleSpecificInfo);
+}
+
+function handleAdministratorRole(email, password, firstName, lastName) {
+    const adminPhone = document.getElementById('admin-phone').value;
+
+    if (!adminPhone) {
+        alert('Please enter a phone number for the administrator.');
+        return;
+    }
+
+    const roleSpecificInfo = {
+        adminPhone: adminPhone
+    };
+
+    createUserAndSaveData(email, password, firstName, lastName, 'administrator', roleSpecificInfo);
+}
+
+function handleProfesorRole(email, password, firstName, lastName) {
+    const profDepartament = document.getElementById('prof-departament').value;
+
+    if (!profDepartament) {
+        alert('Please select a department for the professor.');
+        return;
+    }
+
+    const roleSpecificInfo = {
+        profDepartament: profDepartament,
+    };
+
+    createUserAndSaveData(email, password, firstName, lastName, 'profesor', roleSpecificInfo);
+}
+
+function handleSecretarRole(email, password, firstName, lastName) {
+    const secretarDepartament = document.getElementById('secretar-departament').value;
+
+    if (!secretarDepartament) {
+        alert('Please select a department for the secretary.');
+        return;
+    }
+
+    const roleSpecificInfo = {
+        secretarDepartament: secretarDepartament
+    };
+
+    createUserAndSaveData(email, password, firstName, lastName, 'secretar', roleSpecificInfo);
+}
+
+function createUserAndSaveData(email, password, firstName, lastName, role, roleSpecificInfo) {
+    createUser({ email, password, firstName, lastName, role })
+        .then((result) => {
+            if (!result.data.uid) {
+                throw new Error("UID is undefined after creating user.");
+            }
+            const uid = result.data.uid;
+
+            set(ref(database, 'users/' + uid), {
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                role: role
+            }).then(() => {
+                let path;
+                switch (role) {
+                    case 'student':
+                    path = `students/${uid}`;
+                    break;
+                case 'administrator':
+                    path = `admins/${uid}`;
+                    break;
+                case 'profesor':
+                    path = 'teachers/' + uid;
+                    break;
+                case 'secretar':
+                    path = `secretaries/${uid}`;
+                    break;
+                default:
+                    throw new Error('Invalid role');
+            }
+                if (path) {
+                    // Save the role-specific information in the designated path
+                    return set(ref(database, path), roleSpecificInfo);
+                }
+            }).then(() => {
+                alert('User created successfully!');
+                registerForm.reset();
+            }).catch((error) => {
+                console.error('Error saving user data:', error);
+                alert('Failed to create account. ' + error.message);
+            });
+        })
+        .catch((error) => {
+            console.error('Error creating user:', error);
+            alert('Failed to create account. ' + error.message);
+        });
+}
+
 registerButton.addEventListener('click', function(event) {
     event.preventDefault();
 
@@ -72,8 +187,13 @@ registerButton.addEventListener('click', function(event) {
     const lastName = document.getElementById('last-name').value;
     const role = roleSelect.value;
 
-    let roleSpecificInfo = {};
+    // Validate email
+    if (!validateEmail(email)) {
+        alert('Please enter a valid UPT email address.');
+        return; 
+    }
 
+    // Handle registration based on role
     switch (role) {
         case 'student':
             handleStudentRole(email, password, firstName, lastName);
@@ -88,101 +208,11 @@ registerButton.addEventListener('click', function(event) {
             handleSecretarRole(email, password, firstName, lastName);
             break;
         default:
-            alert("Te rog să selectezi un rol.");
-            return;
+            alert("Please select a role.");
     }
+});
 
-function handleStudentRole() {
-    const studentNumber = document.getElementById('student-number').value;
-    const studyYear = document.getElementById('study-year').value;
-    if (!studentNumber || !studyYear || studyYear < 1 || studyYear > 4) {
-        alert('Te rog să completezi numărul matricol și anul de studiu mai mic decât 4');
-        return;
-    }
-    verifyMatriculationNumberAndProceed(studentNumber, studyYear);
+function validateEmail(email) {
+    const emailPattern = /.+upt\.ro$/;
+    return emailPattern.test(email);
 }
-
-function verifyMatriculationNumberAndProceed(studentNumber, studyYear) {
-    const matriculationNumbersRef = ref(database, 'matriculationNumbers/' + studentNumber);
-    get(matriculationNumbersRef).then((snapshot) => {
-        if (snapshot.exists()) {
-            alert('Numărul matricol este deja înregistrat.');
-        } else {
-            createUserAndSaveData(email, password, firstName, lastName, 'student', { studentNumber, studyYear });
-        }
-    });
-}
-
-function handleAdministratorRole() {
-    const adminPhone = document.getElementById('admin-phone').value;
-    if (!adminPhone) {
-        alert('Te rog să completezi numărul de telefon pentru administrator.');
-        return;
-    }
-    createUserAndSaveData(email, password, firstName, lastName, 'administrator', { adminPhone });
-}
-
-function handleProfesorRole() {
-    const profDepartament = document.getElementById('prof-departament').value;
-    if (!profDepartament) {
-        alert('Te rog să completezi departamentul.');
-        return;
-    }
-    createUserAndSaveData(email, password, firstName, lastName, 'profesor', { profDepartament });
-}
-
-function handleSecretarRole() {
-    const secretarDepartament = document.getElementById('secretar-departament').value;
-    if (!secretarDepartament) {
-        alert('Te rog să completezi departamentul.');
-        return;
-    }
-    createUserAndSaveData(email, password, firstName, lastName, 'secretar', { secretarDepartament });
-}
-
-function createUserAndSaveData(email, password, firstName, lastName, role, roleSpecificInfo) {
-    createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            const user = userCredential.user;
-    
-            set(ref(database, 'users/' + user.uid), {
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                role: role
-            }).then(() => {
-                switch (role) {
-                    case 'student':
-                        set(ref(database, 'students/' + user.uid), {
-                            studentNumber: roleSpecificInfo.studentNumber,
-                            studyYear: roleSpecificInfo.studyYear
-                        });
-                        set(ref(database, 'matriculationNumbers/' + roleSpecificInfo.studentNumber), true);
-                        break;
-                    case 'administrator':
-                        set(ref(database, 'admins/' + user.uid), {
-                            adminPhone: roleSpecificInfo.adminPhone
-                        });
-                        break;
-                    case 'profesor':
-                        set(ref(database, 'teachers/' + user.uid), {
-                            profDepartament: roleSpecificInfo.profDepartament
-                        });
-                        break;
-                    case 'secretar':
-                        set(ref(database, 'secretaries/' + user.uid), {
-                            secretarDepartament: roleSpecificInfo.secretarDepartament
-                        });
-                        break;
-                }
-                alert('Cont creat cu succes!');
-                registerForm.reset();
-            });
-        })
-        .catch((error) => {
-            alert(`Eroare la înregistrare: ${error.message}`);
-        });
-    }
-    });
-    
-

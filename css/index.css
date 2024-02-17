@@ -1,0 +1,88 @@
+/*login.html */
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-container {
+  background: white;
+  padding: 2em;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo-container {
+  text-align: center; /* Centrarea siglei */
+  margin-bottom: 20px; /* Spațiu sub siglă */
+}
+
+.upt-logo {
+  width: 150px; /* sau orice dimensiune dorită */
+  height: auto; /* menține proporția siglei */
+}
+
+
+.login-title {
+  color: #333;
+  text-align: center;
+}
+
+.title-highlight {
+  color: #2e3192;
+}
+
+.login-subtitle {
+  text-align: center;
+  color: #666;
+}
+
+.form-group {
+  margin-bottom: 1em;
+}
+
+.form-group label {
+  display: block;
+  color: #666;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.5em;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.login-button {
+  width: 100%;
+  padding: 1em;
+  border: none;
+  background-color: #2e3192;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.login-button:hover {
+  background-color: #2e3192;
+}
+
+.forgot-password {
+  display: block;
+  text-align: center;
+  margin-top: 1em;
+  color: #2e3192;
+  text-decoration: none;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 2em;
+  color: #999;
+}
+
