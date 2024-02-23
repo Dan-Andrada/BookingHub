@@ -1,14 +1,18 @@
 // app.js
-import { auth, database, analytics, signInWithEmailAndPassword, ref, set, get } from './firebaseConfig.js';
+import { auth, database, analytics, sendPasswordResetEmail, signInWithEmailAndPassword, ref, set, get } from './firebaseConfig.js';
 
 const loginForm = document.getElementById('login-form');
 const loginButton = document.querySelector('.login-button');
+const modal = document.getElementById("password-reset-modal");
+const forgotPasswordBtn = document.querySelector(".forgot-password");
+const passwordResetEmail = document.getElementById('password-reset-email');
+const passwordResetButton = document.getElementById('password-reset-button');
 
 const rolePages = {
-  student: 'student-dashboard.html',
-  profesor: 'profesor-dashboard.html',
-  secretar: 'secretar-dashboard.html',
-  administrator: 'admin-dashboard.html'
+  student: 'public/student-dashboard.html',
+  profesor: 'public/profesor-dashboard.html',
+  secretar: 'public/secretar-dashboard.html',
+  administrator: 'public/admin-dashboard.html'
 };
 
 let attemptsInfo = {
@@ -91,3 +95,31 @@ loginButton.addEventListener('click', function() {
       passwordInput.value = '';
     });
 });
+
+forgotPasswordBtn.onclick = function() {
+  modal.style.display = "block";
+}
+
+document.querySelector('.close').onclick = function() {
+  modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+passwordResetButton.addEventListener('click', () => {
+    const email = passwordResetEmail.value;
+    sendPasswordResetEmail(auth, email)
+        .then(() => {
+            alert("Instrucțiunile de resetare a parolei au fost trimise prin e-mail.");
+            modal.style.display = "none";
+            passwordResetEmail.value='';
+        })
+        .catch((error) => {
+            alert("A apărut o eroare: " + error.message);
+        });
+});
+

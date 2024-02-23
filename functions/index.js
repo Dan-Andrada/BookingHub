@@ -4,7 +4,7 @@ admin.initializeApp();
 
 exports.createUser = functions.https.onCall(async (data, context) => {
 
-  if (!context.auth || context.auth.token.admin !== true) {
+  if (!context.auth ) {
     throw new functions.https.HttpsError("unauthenticated", "Request not authenticated.");
   }
 
