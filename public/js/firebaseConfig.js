@@ -1,6 +1,6 @@
 // js/firebaseConfig.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-import { getAuth,  signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+import { getAuth, signOut, sendPasswordResetEmail, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
 import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-analytics.js";
 
@@ -23,5 +23,7 @@ export const analytics = getAnalytics(app);
 export { createUserWithEmailAndPassword };
 export { signInWithEmailAndPassword };
 export { onAuthStateChanged };
+export { signOut };
+export { sendPasswordResetEmail };
 
 export { ref, set, get};

@@ -76,13 +76,41 @@ function handleStudentRole(email, password, firstName, lastName) {
         return;
     }
 
-    const roleSpecificInfo = {
-        studentNumber: studentNumber,
-        studyYear: studyYear
-    };
-
-    createUserAndSaveData(email, password, firstName, lastName, 'student', roleSpecificInfo);
+    // Verify the matriculation number and proceed accordingly
+    verifyMatriculationNumberAndProceed(studentNumber, () => {
+        // If the matriculation number is not taken, proceed to create user
+        const roleSpecificInfo = {
+            studentNumber: studentNumber,
+            studyYear: studyYear
+        };
+        createUserAndSaveData(email, password, firstName, lastName, 'student', roleSpecificInfo);
+    }, (errorMessage) => {
+        // If the matriculation number is taken or there's an error, alert the user
+        alert(errorMessage);
+    });
 }
+
+function verifyMatriculationNumberAndProceed(studentNumber, onSuccess, onFailure) {
+    const matriculationNumbersRef = ref(database, 'matriculationNumbers/' + studentNumber);
+    get(matriculationNumbersRef).then((snapshot) => {
+        if (snapshot.exists()) {
+            // If the matriculation number is already taken, call the onFailure callback
+            onFailure('The matriculation number is already registered.');
+        } else {
+            // If the matriculation number is not taken, set it to true and call onSuccess
+            set(ref(database, 'matriculationNumbers/' + studentNumber), true)
+                .then(() => onSuccess())
+                .catch((error) => {
+                    console.error('Failed to set matriculation number:', error);
+                    onFailure('Failed to register the matriculation number.');
+                });
+        }
+    }).catch((error) => {
+        console.error('Failed to verify matriculation number:', error);
+        onFailure('An error occurred while verifying the matriculation number.');
+    });
+}
+
 
 function handleAdministratorRole(email, password, firstName, lastName) {
     const adminPhone = document.getElementById('admin-phone').value;
