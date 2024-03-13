@@ -1,8 +1,15 @@
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Arial', sans-serif;
-  }
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  height: 100%;
+  font-family: 'Roboto', sans-serif;
+}
   
   .dashboard {
     display: flex;
@@ -10,24 +17,25 @@ body {
   }
   
   .sidebar {
-    background-color: #003d82; 
+    background-color: #ffffff; 
     color: white;
-    padding: 15px;
+    padding: 55px 10px;
     min-width: 250px;
-    height: 100vh; /* Înălțimea completă a ecranului */
-    box-sizing: border-box; /* Include padding în width */
+    height: 100vh;
+    box-sizing: border-box; 
   }
   
   .nav-menu a {
+    font-family: 'Montserrat', monospace;
     display: block;
-    color: white;
+    color: rgb(0, 0, 0);
     padding: 10px 0;
     text-decoration: none;
     transition: background-color 0.3s ease;
   }
   
   .nav-menu a:hover {
-    background-color:#0056b3;
+    background-color:#0160cd;
   }
   
   .main-content {
@@ -37,6 +45,97 @@ body {
   }
   
   #user-name {
+
     text-align: center;
     font-style: italic;
+    margin-right: 12px; 
+    font-size: 16px; 
+    
+}
+
+.top-bar {
+  background-color: #003d82;
+  color: #ffffff;
+  padding: 5px 5px;
+  text-align: right;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,.1);
+  z-index: 1000;
+}
+
+.top-bar h1 {
+  margin: 0;
+  color: #ecf0f1;
+}
+
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+}
+
+.top-bar-left {
+  font-size: smaller;
+}
+
+.profile-pic {
+  border-radius: 50%;
+  width: 40px; 
+  height: 40px;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .top-bar h1 {
+      font-size: 1.2em; 
+  }
+}
+
+.user-image {
+  width: 32px; 
+  height: 32px; 
+  border-radius: 50%; 
+  margin-right: 8px; 
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    padding: 0 10px; 
+}
+
+.dropdown-arrow {
+    margin-left: auto; 
+}
+
+.top-bar .top-bar-left h1 {
+  font-family: 'Montserrat', sans-serif; 
+  font-weight: 700; 
+  color: #ecf0f1;
+  font-size: 1.75em; 
+  letter-spacing: 1px; 
+}
+
+.top-bar .top-bar-left .logo-subtitle {
+  font-size: 0.75em; 
+  font-weight: 300; 
+  color: #bdc3c7; 
+  letter-spacing: 0.5px; 
+}
+
+.top-bar .top-bar-left h1:hover {
+  text-decoration: none; 
+  opacity: 0.8; 
+  cursor: pointer; 
+}
+
+.logo-highlight {
+  color: #3498db; 
 }

@@ -4,20 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UPT Booking Hub</title>
+<link rel="icon" type="images/logo" href="/public/images/logo.png">
 <link rel="stylesheet" href="public/css/index.css">
+<link href="/node_modules/toastr/build/toastr.min.css" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 <body>
 
 <div class="login-container">
     <div class="logo-container">
-        <img src="public/images/upt.png" alt="Sigla UPT" class="upt-logo">
+        <img src="public/images/logo.png" alt="Sigla UPT" class="upt-logo">
     </div>
     <div class="login-form">
-        <h1 class="login-title">UPTbooking<span class="title-highlight">Hub</span></h1>
+        
         <h2 class="login-subtitle">Autentificare</h2>
         <form id="login-form">
             <div class="form-group">
-                <label for="email">Adresă de mail</label>
+                <label for="email">Adresă de email</label>
                 <input type="email" id="email" name="email" autocomplete="email" required>
             </div>
             <div class="form-group">
@@ -44,6 +47,9 @@
 </div>
 
 <script type="module" src="public/js/app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/node_modules/jquery/dist/jquery.min.js"></script>
+<script src="/node_modules/toastr/build/toastr.min.js"></script>
 
 </body>        
 </html>
