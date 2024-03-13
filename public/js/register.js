@@ -72,21 +72,22 @@ function handleStudentRole(email, password, firstName, lastName) {
     const studyYear = document.getElementById('study-year').value;
 
     if (!studentNumber || !studyYear || studyYear < 1 || studyYear > 4) {
-        alert('Please enter a valid student number and study year (1-4).');
+        toastr.info('Please enter a valid student number and study year (1-4).', {
+            timeOut: 3000,
+        });
         return;
     }
 
-    // Verify the matriculation number and proceed accordingly
     verifyMatriculationNumberAndProceed(studentNumber, () => {
-        // If the matriculation number is not taken, proceed to create user
         const roleSpecificInfo = {
             studentNumber: studentNumber,
             studyYear: studyYear
         };
         createUserAndSaveData(email, password, firstName, lastName, 'student', roleSpecificInfo);
     }, (errorMessage) => {
-        // If the matriculation number is taken or there's an error, alert the user
-        alert(errorMessage);
+        toastr.error(errorMessage, {
+            timeOut: 3000,
+        });
     });
 }
 
@@ -94,10 +95,8 @@ function verifyMatriculationNumberAndProceed(studentNumber, onSuccess, onFailure
     const matriculationNumbersRef = ref(database, 'matriculationNumbers/' + studentNumber);
     get(matriculationNumbersRef).then((snapshot) => {
         if (snapshot.exists()) {
-            // If the matriculation number is already taken, call the onFailure callback
             onFailure('The matriculation number is already registered.');
         } else {
-            // If the matriculation number is not taken, set it to true and call onSuccess
             set(ref(database, 'matriculationNumbers/' + studentNumber), true)
                 .then(() => onSuccess())
                 .catch((error) => {
@@ -116,7 +115,9 @@ function handleAdministratorRole(email, password, firstName, lastName) {
     const adminPhone = document.getElementById('admin-phone').value;
 
     if (!adminPhone) {
-        alert('Please enter a phone number for the administrator.');
+        toastr.info('Please enter a phone number for the administrator.', {
+            timeOut: 3000,
+        });
         return;
     }
 
@@ -131,7 +132,9 @@ function handleProfesorRole(email, password, firstName, lastName) {
     const profDepartament = document.getElementById('prof-departament').value;
 
     if (!profDepartament) {
-        alert('Please select a department for the professor.');
+        toastr.info('Please select a department for the professor.', {
+            timeOut: 3000,
+        });
         return;
     }
 
@@ -146,7 +149,9 @@ function handleSecretarRole(email, password, firstName, lastName) {
     const secretarDepartament = document.getElementById('secretar-departament').value;
 
     if (!secretarDepartament) {
-        alert('Please select a department for the secretary.');
+        toastr.info('Please select a department for the secretary.', {
+            timeOut: 3000,
+        });
         return;
     }
 
@@ -193,16 +198,22 @@ function createUserAndSaveData(email, password, firstName, lastName, role, roleS
                     return set(ref(database, path), roleSpecificInfo);
                 }
             }).then(() => {
-                alert('User created successfully!');
+                toastr.success('User created successfully!', {
+                    timeOut: 3000,
+                });
                 registerForm.reset();
             }).catch((error) => {
                 console.error('Error saving user data:', error);
-                alert('Failed to create account. ' + error.message);
+                toastr.error('Failed to create account. ' + error.message, {
+                    timeOut: 3000,
+                });
             });
         })
         .catch((error) => {
             console.error('Error creating user:', error);
-            alert('Failed to create account. ' + error.message);
+            toastr.error('Failed to create account. ' + error.message, {
+                timeOut: 3000,
+            });
         });
 }
 
@@ -215,9 +226,18 @@ registerButton.addEventListener('click', function(event) {
     const lastName = document.getElementById('last-name').value;
     const role = roleSelect.value;
 
+    if (lastName === "" || firstName === "") {
+        toastr.info("Numele și prenumele sunt obligatorii!", {
+            timeOut: 3000,
+        });
+        return false; 
+      }
+
     // Validate email
     if (!validateEmail(email)) {
-        alert('Please enter a valid UPT email address.');
+       toastr.info('Please enter a valid UPT email address.', {
+        timeOut: 3000,
+       });
         return; 
     }
 
@@ -236,7 +256,9 @@ registerButton.addEventListener('click', function(event) {
             handleSecretarRole(email, password, firstName, lastName);
             break;
         default:
-            alert("Please select a role.");
+            toastr.info("Please select a role.", {
+                timeOut: 3000,
+            });
     }
 });
 

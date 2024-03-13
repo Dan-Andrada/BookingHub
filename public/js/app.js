@@ -41,12 +41,16 @@ loginButton.addEventListener('click', function() {
 
   if (attemptsInfo.attempts >= 3 && currentTime < attemptsInfo.lockoutTime) {
     const waitTime = (attemptsInfo.lockoutTime - currentTime) / 1000 / 60;
-    alert(`Prea multe încercări eșuate. Vă rugăm să așteptați ${waitTime.toFixed(1)} minute.`);
+    toastr.error(`Prea multe încercări eșuate. Vă rugăm să așteptați ${waitTime.toFixed(1)} minute.`, {
+      timeOut: 3000,
+    });
     return;
   }
 
   if (!emailPattern.test(email)) {
-    alert('Vă rugăm să introduceți o adresă de email validă de la UPT.');
+    toastr.info('Vă rugăm să introduceți o adresă de email validă de la UPT.', {
+      timeOut: 3000,
+    });
     return; 
   }
 
@@ -55,7 +59,6 @@ loginButton.addEventListener('click', function() {
       
       attemptsInfo.attempts = 0;
       const uid = userCredential.user.uid;
-      //console.log(user); 
       
       return get(ref(database, `users/${uid}`));
     })
@@ -83,15 +86,18 @@ loginButton.addEventListener('click', function() {
       const errorCode = error.code;
       const errorMessage = error.message;
       console.error(`Eroare la autentificare: ${errorCode}`, errorMessage);
-      alert(`Eroare la autentificare: ${errorMessage}`);
+      toastr.error(`Eroare la autentificare: ${errorMessage}`, {
+        timeOut: 3000,
+      });
       passwordInput.value = '';
 
       attemptsInfo.attempts++;
       if (attemptsInfo.attempts >= 3) {
         attemptsInfo.lockoutTime = new Date().getTime() + 15 * 60 * 1000;
       }
-      alert(`Mai aveți ${3 - attemptsInfo.attempts} încercări.`);
-      
+      toastr.info(`Mai aveți ${3 - attemptsInfo.attempts} încercări.`, {
+        timeOut: 3000,
+      });
       passwordInput.value = '';
     });
 });
@@ -114,12 +120,16 @@ passwordResetButton.addEventListener('click', () => {
     const email = passwordResetEmail.value;
     sendPasswordResetEmail(auth, email)
         .then(() => {
-            alert("Instrucțiunile de resetare a parolei au fost trimise prin e-mail.");
+            toastr.info("Instrucțiunile de resetare a parolei au fost trimise prin e-mail.", {
+              timeOut: 3000,
+            });
             modal.style.display = "none";
             passwordResetEmail.value='';
         })
         .catch((error) => {
-            alert("A apărut o eroare: " + error.message);
+            toastr.error("A apărut o eroare: " + error.message), {
+              timeOut: 3000,
+            };
         });
 });
 
