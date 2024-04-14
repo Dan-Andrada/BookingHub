@@ -1,58 +1,57 @@
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f7f7f7;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  
-  .register-container {
-    max-width: 500px; 
-    margin: 0 auto; 
-    padding: 2rem; 
-    background: #f9f9f9; 
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .register-form {
-    margin: 2rem 0; 
-  }
-  
-  .form-group {
-    margin-bottom: 1rem; 
-  }
-  
-  .form-group label {
-    display: block; 
-    margin-bottom: .5rem; 
-  }
-  
-  .form-group input[type="text"],
-  .form-group input[type="email"],
-  .form-group input[type="password"],
-  .form-group input[type="tel"],
-  .form-group select {
-    width: 100%; 
-    padding: .5rem; 
-    border: 1px solid #ccc; 
-    border-radius: .25rem; 
-  }
-  
-  button#register-button {
-    width: 100%;
-    padding: 1rem; 
-    border: none; 
-    background-color: #0056b3; 
-    color: white; 
-    border-radius: .25rem; 
-    cursor: pointer; 
-    font-size: 1rem; 
-  }
-  
-  button#register-button:hover {
-    background-color: #003d82; 
-  }
-  
+  font-family: "Arial", sans-serif;
+  background-color: #f7f7f7;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.register-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #f9f9f9;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.register-form {
+  margin: 2rem 0;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="tel"],
+.form-group select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+}
+
+button#register-button {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  background-color: #0056b3;
+  color: white;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+button#register-button:hover {
+  background-color: #003d82;
+}

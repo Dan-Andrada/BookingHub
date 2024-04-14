@@ -1,18 +1,4 @@
-import {
-  update,
-  updateProfile,
-  auth,
-  database,
-  signOut,
-  set,
-  ref,
-  get,
-  onAuthStateChanged,
-  storage,
-  storageRef,
-  uploadBytes,
-  getDownloadURL,
-} from "./firebaseConfig.js";
+import { update, updateProfile, auth, database, signOut, set, ref, get, onAuthStateChanged, storage, storageRef, uploadBytes, getDownloadURL } from './firebaseConfig.js';
 
 const userImage = document.getElementById("userImage");
 const imageUpload = document.getElementById("imageUpload");
@@ -57,6 +43,8 @@ document.addEventListener("DOMContentLoaded", () => {
     card.innerHTML = `
     <h3>${userData.firstName} ${userData.lastName || ""}</h3>
     <p>${userData.role}</p>
+    <p>Număr matricol ${userData.studentNumber || 'N/A'}</p>
+    <p>An de studiu ${userData.studyYear || 'N/A'}</p>
     `;
 
     container.appendChild(card);
@@ -67,22 +55,33 @@ document.addEventListener("DOMContentLoaded", () => {
       const user = auth.currentUser;
       if (user) {
         const uid = user.uid;
-        get(ref(database, "/users/" + uid))
-          .then((snapshot) => {
-            if (snapshot.exists()) {
-              const userData = snapshot.val();
-              resolve(userData); 
+        get(ref(database, '/users/' + uid)).then((userSnapshot) => {
+          if (userSnapshot.exists()) {
+            const userData = userSnapshot.val();
+            if (userData.role === 'student') {
+              get(ref(database, '/students/' + uid)).then((studentSnapshot) => {
+                if (studentSnapshot.exists()) {
+                  const studentData = studentSnapshot.val();
+                  resolve({ ...userData, studentNumber: studentData.studentNumber, studyYear: studentData.studyYear });
+                } else {
+                  resolve(userData);
+                }
+              }).catch(reject);
             } else {
-              reject("Detalii utilizator indisponibile.");
+              resolve(userData);
             }
-          })
-          .catch(reject);
+          } else {
+            reject('Detalii utilizator indisponibile.');
+          }
+        }).catch(reject);
       } else {
-        reject("Utilizatorul nu este autentificat");
+        reject('Utilizatorul nu este autentificat');
       }
     });
   }
+  
 
+  
   if (logoutLink) {
     logoutLink.addEventListener("click", (event) => {
       event.preventDefault();
@@ -153,3 +152,5 @@ imageUpload.addEventListener("change", function (event) {
     console.log("No authenticated user.");
   }
 });
+
+
