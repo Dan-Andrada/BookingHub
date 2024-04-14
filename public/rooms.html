@@ -1,45 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>UPT Booking Hub</title>
-    <link rel="icon" type="images/logo" href="images/logo.png">
-    <link rel="stylesheet" href="./css/rooms.css">
-    <link href="/node_modules/toastr/build/toastr.min.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-  
-</head>
-<body>
-
-    <div id="roomsList" class="rooms-list">
-
-      </div>
-
-    <!-- Overlay-ul pentru fundalul întunecat -->
-<div id="overlay" class="overlay">
-  <!-- Popup-ul de editare sală -->
-  <div id="editSalaPopup" class="edit-popup">
-    <form id="editSalaForm">
-      <!-- Câmpurile pentru editare -->
-      <input type="text" id="edit_nume_sala" placeholder="Nume Sala">
-      <input type="number" id="edit_capacitate" placeholder="Capacitate">
-      <input type="text" id="edit_echipamente" placeholder="Echipamente">
-      <input type="text" id="edit_descriere" placeholder="Descriere">
-      <!-- Buton pentru salvare modificări și închidere -->
-      <button type="submit">Salvează Modificările</button>
-      <button id="closeEditPopupBtn" type="button">Închide</button>
-    </form>
-  </div>
-</div>
-
-
-<button id="addRoomBtn" onclick="location.href='add-rooms.html'">+</button>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="/node_modules/jquery/dist/jquery.min.js"></script>
-<script src="/node_modules/toastr/build/toastr.min.js"></script>
-<script type="module" src="./js/rooms.js"></script>
+    <link rel="icon" type="images/logo" href="images/logo.png" />
+    <link rel="stylesheet" href="./css/rooms.css" />
+    <link href="/node_modules/toastr/build/toastr.min.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+  </head>
+  <body>
     
-</body>
+    <div id="filterControls">
+      <input type="text" id="searchBox" placeholder="Caută sală...">
+      <select id="capacityFilter">
+        <option value="">Selectează capacitate...</option>
+        <option value="20">Până la 20</option>
+        <option value="20-50">Între 20 și 50</option>
+        <option value="50+">Peste 50</option>
+      </select>
+    </div>
+    
+    <div id="roomsList" class="rooms-list"></div>
+
+    <div id="overlay" class="overlay">
+      <div id="editSalaPopup" class="edit-popup">
+        <form id="editSalaForm">
+          <input type="text" id="edit_nume_sala" placeholder="Nume Sala" />
+          <input type="number" id="edit_capacitate" placeholder="Capacitate" />
+          <input type="text" id="edit_echipamente" placeholder="Echipamente" />
+          <input type="text" id="edit_descriere" placeholder="Descriere" />
+          <button type="submit">Salvează Modificările</button>
+          <button id="closeEditPopupBtn" type="button">Închide</button>
+        </form>
+      </div>
+    </div>
+    <div id="loadingSpinner" class="loading-spinner"></div>
+    
+    <button id="addRoomBtn" onclick="location.href='add-rooms.html'">+</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/toastr/build/toastr.min.js"></script>
+    <script type="module" src="./js/rooms.js"></script>
+  </body>
 </html>

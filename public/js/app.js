@@ -1,31 +1,30 @@
 // app.js
 import { auth, database, analytics, sendPasswordResetEmail, signInWithEmailAndPassword, ref, set, get } from './firebaseConfig.js';
 
-const loginForm = document.getElementById('login-form');
-const loginButton = document.querySelector('.login-button');
+const loginForm = document.getElementById("login-form");
+const loginButton = document.querySelector(".login-button");
 const modal = document.getElementById("password-reset-modal");
 const forgotPasswordBtn = document.querySelector(".forgot-password");
-const passwordResetEmail = document.getElementById('password-reset-email');
-const passwordResetButton = document.getElementById('password-reset-button');
+const passwordResetEmail = document.getElementById("password-reset-email");
+const passwordResetButton = document.getElementById("password-reset-button");
 
 const rolePages = {
-  student: 'public/student-dashboard.html',
-  profesor: 'public/profesor-dashboard.html',
-  secretar: 'public/secretar-dashboard.html',
-  administrator: 'public/admin-dashboard.html'
+  student: "public/student-dashboard.html",
+  profesor: "public/profesor-dashboard.html",
+  secretar: "public/secretar-dashboard.html",
+  administrator: "public/admin-dashboard.html",
 };
 
 let attemptsInfo = {
-  email: '',
+  email: "",
   attempts: 0,
-  lockoutTime: 0
+  lockoutTime: 0,
 };
 
-const emailInput = document.getElementById('email');
-const passwordInput = document.getElementById('password');
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
 
-loginButton.addEventListener('click', function() {
-
+loginButton.addEventListener("click", function () {
   const email = emailInput.value;
   const password = passwordInput.value;
   const currentTime = new Date().getTime();
@@ -41,25 +40,29 @@ loginButton.addEventListener('click', function() {
 
   if (attemptsInfo.attempts >= 3 && currentTime < attemptsInfo.lockoutTime) {
     const waitTime = (attemptsInfo.lockoutTime - currentTime) / 1000 / 60;
-    toastr.error(`Prea multe încercări eșuate. Vă rugăm să așteptați ${waitTime.toFixed(1)} minute.`, {
+    toastr.error(
+      `Prea multe încercări eșuate. Vă rugăm să așteptați ${waitTime.toFixed(
+        1
+      )} minute.`,
+      {
+        timeOut: 3000,
+      }
+    );
+    return;
+  }
+
+  if (!emailPattern.test(email)) {
+    toastr.info("Vă rugăm să introduceți o adresă de email validă de la UPT.", {
       timeOut: 3000,
     });
     return;
   }
 
-  if (!emailPattern.test(email)) {
-    toastr.info('Vă rugăm să introduceți o adresă de email validă de la UPT.', {
-      timeOut: 3000,
-    });
-    return; 
-  }
-
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      
       attemptsInfo.attempts = 0;
       const uid = userCredential.user.uid;
-      
+
       return get(ref(database, `users/${uid}`));
     })
     .then((snapshot) => {
@@ -67,29 +70,28 @@ loginButton.addEventListener('click', function() {
         const userData = snapshot.val();
         const userRole = userData.role;
         const redirectTo = rolePages[userRole];
-        
+
         if (redirectTo) {
           window.location.href = redirectTo;
         } else {
-          console.log('Rolul utilizatorului nu are o pagină de redirecționare definită');
-          passwordInput.value = '';
-          
+          console.log(
+            "Rolul utilizatorului nu are o pagină de redirecționare definită"
+          );
+          passwordInput.value = "";
         }
       } else {
-        console.log('Nu s-au putut obține informațiile utilizatorului.');
-        passwordInput.value = '';
-        
+        console.log("Nu s-au putut obține informațiile utilizatorului.");
+        passwordInput.value = "";
       }
     })
     .catch((error) => {
-      
       const errorCode = error.code;
       const errorMessage = error.message;
       console.error(`Eroare la autentificare: ${errorCode}`, errorMessage);
       toastr.error(`Eroare la autentificare: ${errorMessage}`, {
         timeOut: 3000,
       });
-      passwordInput.value = '';
+      passwordInput.value = "";
 
       attemptsInfo.attempts++;
       if (attemptsInfo.attempts >= 3) {
@@ -98,38 +100,41 @@ loginButton.addEventListener('click', function() {
       toastr.info(`Mai aveți ${3 - attemptsInfo.attempts} încercări.`, {
         timeOut: 3000,
       });
-      passwordInput.value = '';
+      passwordInput.value = "";
     });
 });
 
-forgotPasswordBtn.onclick = function() {
+forgotPasswordBtn.onclick = function () {
   modal.style.display = "block";
-}
+};
 
-document.querySelector('.close').onclick = function() {
+document.querySelector(".close").onclick = function () {
   modal.style.display = "none";
-}
+};
 
-window.onclick = function(event) {
+window.onclick = function (event) {
   if (event.target == modal) {
     modal.style.display = "none";
   }
-}
+};
 
-passwordResetButton.addEventListener('click', () => {
-    const email = passwordResetEmail.value;
-    sendPasswordResetEmail(auth, email)
-        .then(() => {
-            toastr.info("Instrucțiunile de resetare a parolei au fost trimise prin e-mail.", {
-              timeOut: 3000,
-            });
-            modal.style.display = "none";
-            passwordResetEmail.value='';
-        })
-        .catch((error) => {
-            toastr.error("A apărut o eroare: " + error.message), {
-              timeOut: 3000,
-            };
-        });
+passwordResetButton.addEventListener("click", () => {
+  const email = passwordResetEmail.value;
+  sendPasswordResetEmail(auth, email)
+    .then(() => {
+      toastr.info(
+        "Instrucțiunile de resetare a parolei au fost trimise prin e-mail.",
+        {
+          timeOut: 3000,
+        }
+      );
+      modal.style.display = "none";
+      passwordResetEmail.value = "";
+    })
+    .catch((error) => {
+      toastr.error("A apărut o eroare: " + error.message),
+        {
+          timeOut: 3000,
+        };
+    });
 });
-

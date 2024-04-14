@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 
 * {
   margin: 0;
@@ -6,51 +6,50 @@
   box-sizing: border-box;
 }
 
-body, html {
+body,
+html {
   height: 100%;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
-  
-  .dashboard {
-    display: flex;
-    flex-wrap: nowrap;
-  }
-  
-  .sidebar {
-    background-color: #ffffff; 
-    color: white;
-    padding: 55px 10px;
-    min-width: 250px;
-    height: 100vh;
-    box-sizing: border-box; 
-  }
-  
-  .nav-menu a {
-    font-family: 'Montserrat', monospace;
-    display: block;
-    color: rgb(0, 0, 0);
-    padding: 10px 0;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-  }
-  
-  .nav-menu a:hover {
-    background-color:#0160cd;
-  }
-  
-  .main-content {
-    flex-grow: 1;
-    background-color: #f4f4f4;
-    padding: 20px;
-  }
-  
-  #user-name {
 
-    text-align: center;
-    font-style: italic;
-    margin-right: 12px; 
-    font-size: 16px; 
-    
+.dashboard {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.sidebar {
+  background-color: #ffffff;
+  color: white;
+  padding: 55px 10px;
+  min-width: 250px;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.nav-menu a {
+  font-family: "Montserrat", monospace;
+  display: block;
+  color: rgb(0, 0, 0);
+  padding: 10px 0;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.nav-menu a:hover {
+  background-color: #0160cd;
+}
+
+.main-content {
+  flex-grow: 1;
+  background-color: #f4f4f4;
+  padding: 20px;
+}
+
+#user-name {
+  text-align: center;
+  font-style: italic;
+  margin-right: 12px;
+  font-size: 16px;
 }
 
 .top-bar {
@@ -65,7 +64,7 @@ body, html {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
 
@@ -73,7 +72,6 @@ body, html {
   margin: 0;
   color: #ecf0f1;
 }
-
 
 .top-bar-right {
   display: flex;
@@ -86,56 +84,71 @@ body, html {
 
 .profile-pic {
   border-radius: 50%;
-  width: 40px; 
+  width: 40px;
   height: 40px;
   object-fit: cover;
 }
 
 @media (max-width: 768px) {
   .top-bar h1 {
-      font-size: 1.2em; 
+    font-size: 1.2em;
   }
 }
 
 .user-image {
-  width: 32px; 
-  height: 32px; 
-  border-radius: 50%; 
-  margin-right: 8px; 
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 8px;
 }
 
 .user-profile {
-    display: flex;
-    align-items: center;
-    justify-content: space-between; 
-    padding: 0 10px; 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
 }
 
 .dropdown-arrow {
-    margin-left: auto; 
+  margin-left: auto;
 }
 
 .top-bar .top-bar-left h1 {
-  font-family: 'Montserrat', sans-serif; 
-  font-weight: 700; 
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
   color: #ecf0f1;
-  font-size: 1.75em; 
-  letter-spacing: 1px; 
+  font-size: 1.75em;
+  letter-spacing: 1px;
 }
 
 .top-bar .top-bar-left .logo-subtitle {
-  font-size: 0.75em; 
-  font-weight: 300; 
-  color: #bdc3c7; 
-  letter-spacing: 0.5px; 
+  font-size: 0.75em;
+  font-weight: 300;
+  color: #bdc3c7;
+  letter-spacing: 0.5px;
 }
 
 .top-bar .top-bar-left h1:hover {
-  text-decoration: none; 
-  opacity: 0.8; 
-  cursor: pointer; 
+  text-decoration: none;
+  opacity: 0.8;
+  cursor: pointer;
 }
 
 .logo-highlight {
-  color: #3498db; 
+  color: #3498db;
 }
+
+#userCardContainer {
+  padding: 20px;
+  margin-top: 40px;
+}
+
+.user-card {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-left: 600px;
+}
+
+

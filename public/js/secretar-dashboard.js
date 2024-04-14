@@ -1,18 +1,4 @@
-import {
-  update,
-  updateProfile,
-  auth,
-  database,
-  signOut,
-  set,
-  ref,
-  get,
-  onAuthStateChanged,
-  storage,
-  storageRef,
-  uploadBytes,
-  getDownloadURL,
-} from "./firebaseConfig.js";
+import { update, updateProfile, auth, database, signOut, set, ref, get, onAuthStateChanged, storage, storageRef, uploadBytes, getDownloadURL } from './firebaseConfig.js';
 
 const userImage = document.getElementById("userImage");
 const imageUpload = document.getElementById("imageUpload");
@@ -32,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (snapshot.exists()) {
             const userData = snapshot.val();
             getUserDetails().then(createAndAppendUserCard).catch(console.error);
+
             const userNameDisplay = document.getElementById("user-name");
 
             userNameDisplay.textContent = userData.firstName || "Nume";
@@ -47,41 +34,59 @@ document.addEventListener("DOMContentLoaded", () => {
           console.error("Eroare la preluarea datelor utilizatorului:", error);
         });
     }
-  });
 
-  function createAndAppendUserCard(userData) {
-    const container = document.getElementById("userCardContainer");
-    const card = document.createElement("div");
-    card.className = "user-card";
-
-    card.innerHTML = `
-    <h3>${userData.firstName} ${userData.lastName || ""}</h3>
-    <p>${userData.role}</p>
-    `;
-
-    container.appendChild(card);
-  }
-
-  function getUserDetails() {
-    return new Promise((resolve, reject) => {
-      const user = auth.currentUser;
-      if (user) {
-        const uid = user.uid;
-        get(ref(database, "/users/" + uid))
-          .then((snapshot) => {
-            if (snapshot.exists()) {
-              const userData = snapshot.val();
-              resolve(userData); 
-            } else {
-              reject("Detalii utilizator indisponibile.");
-            }
-          })
-          .catch(reject);
-      } else {
-        reject("Utilizatorul nu este autentificat");
+    function createAndAppendUserCard(userData) {
+        const container = document.getElementById("userCardContainer");
+        const card = document.createElement("div");
+        card.className = "user-card";
+      
+        card.innerHTML = `
+        <h3>${userData.firstName} ${userData.lastName || ''}</h3>
+        <p>${userData.role}</p>
+        ${userData.role === 'secretar' ? `<p> ${userData.departament || 'N/A'}</p>` : ''}
+        `;
+      
+        container.appendChild(card);
       }
-    });
-  }
+
+    function getUserDetails() {
+        return new Promise((resolve, reject) => {
+          const user = auth.currentUser;
+          if (user) {
+            const uid = user.uid;
+            get(ref(database, '/users/' + uid)).then((userSnapshot) => {
+              if (userSnapshot.exists()) {
+                const userData = userSnapshot.val();
+                if (userData.role === 'secretar') {
+                  get(ref(database, '/secretaries/' + uid)).then((secSnapshot) => {
+                    if (secSnapshot.exists()) {
+                      const secretaryData = secSnapshot.val();
+                      const departmentId = secretaryData.secretarDepartament;
+                      get(ref(database, '/departaments/' + departmentId)).then((depSnapshot) => {
+                        if (depSnapshot.exists()) {
+                          const departmentName = depSnapshot.val();
+                          resolve({ ...userData, departament: departmentName });
+                        } else {
+                          resolve({ ...userData, departament: 'N/A' });
+                        }
+                      }).catch(reject);
+                    } else {
+                      resolve({ ...userData, departament: 'N/A' }); 
+                    }
+                  }).catch(reject);
+                } else {
+                  resolve(userData);
+                }
+              } else {
+                reject('Detalii utilizator indisponibile.');
+              }
+            }).catch(reject);
+          } else {
+            reject('Utilizatorul nu este autentificat');
+          }
+        });
+      }      
+  });
 
   if (logoutLink) {
     logoutLink.addEventListener("click", (event) => {

@@ -1,5 +1,5 @@
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   background: #f7f7f7;
   margin: 0;
   padding: 20px;
@@ -8,7 +8,7 @@ body {
 .rooms-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px; /* distanta intre carduri */
+  gap: 20px;
   justify-content: center;
 }
 
@@ -17,8 +17,8 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   padding: 15px;
-  width: 300px; /* latimea fiecarui card */
-  margin-bottom: 20px; /* distanta de la un card la altul vertical */
+  width: 300px;
+  margin-bottom: 20px;
 }
 
 .room-card h2 {
@@ -32,7 +32,8 @@ body {
   line-height: 1.5;
 }
 
-.edit-btn, .delete-btn {
+.edit-btn,
+.delete-btn {
   background: none;
   border: none;
   cursor: pointer;
@@ -40,11 +41,11 @@ body {
 }
 
 .edit-btn {
-  color: #4CAF50; /* verde */
+  color: #4caf50;
 }
 
 .delete-btn {
-  color: #F44336; /* rosu */
+  color: #f44336;
   margin-left: 10px;
 }
 
@@ -52,7 +53,7 @@ body {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: #007BFF; /* albastru */
+  background-color: #007bff;
   color: #ffffff;
   border: none;
   border-radius: 50%;
@@ -64,10 +65,9 @@ body {
 }
 
 #addRoomBtn:hover {
-  background-color: #0056b3; /* albastru mai inchis */
+  background-color: #0056b3;
 }
 
-/* Responsive layout pentru ecrane mici */
 @media (max-width: 600px) {
   .rooms-list {
     flex-direction: column;
@@ -75,7 +75,7 @@ body {
   }
 
   .room-card {
-    width: 90%; /* pe ecran mic cardurile vor fi mai late */
+    width: 90%;
   }
 
   #addRoomBtn {
@@ -85,7 +85,6 @@ body {
   }
 }
 
-/* Stilul pentru overlay-ul întunecat de fundal */
 .overlay {
   display: none;
   position: fixed;
@@ -99,7 +98,6 @@ body {
   align-items: center;
 }
 
-/* Se afișează overlay-ul când are clasa "active" */
 .overlay.active {
   display: flex;
 }
@@ -110,13 +108,13 @@ body {
   border-radius: 4px;
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 400px; /* sau orice lățime preferi */
-  margin: auto; /* pentru a centra popup-ul */
+  width: 400px;
+  margin: auto;
   position: fixed;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1000; /* să fie deasupra celorlalte elemente */
+  z-index: 1000;
 }
 
 .edit-popup form {
@@ -124,14 +122,14 @@ body {
   flex-direction: column;
 }
 
-.edit-popup input[type='text'],
-.edit-popup input[type='number'],
+.edit-popup input[type="text"],
+.edit-popup input[type="number"],
 .edit-popup button {
   border: 1px solid #ddd;
   border-radius: 4px;
-  margin-bottom: 10px; /* spațiu între elemente */
+  margin-bottom: 10px;
   padding: 10px;
-  font-size: 1rem; /* mărime font */
+  font-size: 1rem;
 }
 
 .edit-popup button {
@@ -145,11 +143,11 @@ body {
   background-color: #0056b3;
 }
 
-.edit-popup button[type='button'] {
+.edit-popup button[type="button"] {
   background-color: #6c757d;
 }
 
-.edit-popup button[type='button']:hover {
+.edit-popup button[type="button"]:hover {
   background-color: #545b62;
 }
 
@@ -158,11 +156,115 @@ body {
 }
 
 .swal2-confirm {
-  background-color: #3085d6 !important; 
+  background-color: #3085d6 !important;
 }
 
-.custom-toast {
-  background-color: #FF0000; 
-  color: #FFFFFF; 
-  border-color: #FF8000; 
+.loading-spinner {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: #3498db;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+#filterControls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 0 15px;
+}
+
+#filterControls input,
+#filterControls select {
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+#filterControls input {
+  flex-grow: 1; /* Asigură că inputul de căutare ocupă spațiul disponibil */
+}
+
+#filterControls select {
+  width: auto; /* Ajustează în funcție de conținutul său */
+}
+
+
+/* Stil pentru listarea sălilor */
+.rooms-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: start;
+}
+
+.room-card {
+  background: #ffffff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  border-radius: 5px;
+  width: calc(33.333% - 20px); /* pentru 3 carduri pe rând */
+  margin-bottom: 20px; /* spațiu la partea de jos a fiecărui card */
+}
+
+.room-card h2 {
+  font-size: 20px;
+  color: #333;
+  margin-top: 0;
+}
+
+.room-card p {
+  color: #555;
+  margin: 5px 0;
+}
+
+/* Stilizare pentru butoane */
+.edit-btn,
+.delete-btn {
+  cursor: pointer;
+  padding: 8px 16px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  font-size: 14px;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+}
+
+/* Stil responsive pentru ecrane mici */
+@media (max-width: 768px) {
+  .room-card {
+    width: calc(50% - 20px); /* pentru 2 carduri pe rând */
+  }
+}
+
+@media (max-width: 480px) {
+  .room-card {
+    width: 100%; /* pentru 1 card pe rând */
+  }
+}
+
+#addRoomBtn {
+  display: none;
 }
