@@ -1,5 +1,4 @@
 #calendar {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-  
+  height: 80vh; 
+  margin: auto; 
+}
