@@ -138,17 +138,60 @@ html {
   color: #3498db;
 }
 
-#userCardContainer {
-  padding: 20px;
-  margin-top: 40px;
+.main-content {
+  display: flex;
+  flex-wrap: wrap; /* În caz că elementele nu încap pe un singur rând */
+  gap: 20px; /* Spațiu între carduri */
+  justify-content: center; /* Aliniază cardurile în centru */
 }
 
-.user-card {
+.user-card-container, .links-card-container {
+  flex: 1; /* Flexibil, dar să ia egal spațiu */
+  min-width: 300px; /* Minim o lățime pentru a fi vizibil */
+  padding: 20px;
+  margin-top: 45px;
+  margin-bottom: 600px;
   background-color: #f9f9f9;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  margin-left: 600px;
 }
 
+.links-card-container {
+  margin-bottom: 500px;
+}
+
+.booking-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
+.booking-option {
+  border: 2px solid #0160cd;
+  border-radius: 10px;
+  background-color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.booking-option:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(23, 92, 152, 0.2); 
+}
+
+.text {
+  margin-top: 10px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.booking-option-link {
+  text-decoration: none; 
+}
 

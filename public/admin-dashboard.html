@@ -20,6 +20,8 @@
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap"
       rel="stylesheet"
     />
+
+
   </head>
   <body>
     <div class="dashboard">
@@ -39,7 +41,7 @@
 
       <div class="sidebar">
         <nav class="nav-menu">
-          <a href="index.html">Pagina principală</a>
+          <a href="admin-dashboard.html">Pagina principală</a>
           <a href="calendar.html">Calendar</a>
           <a href="rezervari.html">Rezervări</a>
           <a href="register.html">Înregistrează un utilizator</a>
@@ -48,11 +50,37 @@
         </nav>
       </div>
       <div class="main-content">
-        <!-- Conținutul principal al paginii va fi aici -->
-        <div id="userCardContainer" class="user-card-container"></div>
+        <div id="linksCardContainer" class="links-card-container">
+          <div class="booking-options">
+            <a href="register.html" class="booking-option-link">
+              <button class="booking-option">
+                <ion-icon name="person-add-outline" style="font-size: 30px;"></ion-icon>
+                <span class="text">Adăugare utilizator</span>
+              </button>
+            </a>
+            <a href="add-rooms.html" class="booking-option-link">
+              <button class="booking-option">
+                <ion-icon name="business-outline" style="font-size: 30px;"></ion-icon>
+                <span class="text">Adăugare sală</span>
+              </button>
+            </a>
+            <a href="calendar.html" class="booking-option-link">
+              <button class="booking-option">
+                <ion-icon name="calendar-outline" style="font-size: 30px;"></ion-icon>
+                <span class="text">Rezervă sală</span>
+              </button>
+            </a>
+          </div>      
+        </div>
+        
+        <div id="userCardContainer" class="user-card-container">
+          <!-- Conținut pentru user card -->
+        </div>
       </div>
-    </div>
+      
 
     <script type="module" src="./js/admin-dashboard.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
   </body>
 </html>

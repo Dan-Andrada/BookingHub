@@ -39,7 +39,7 @@
 
       <div class="sidebar">
         <nav class="nav-menu">
-          <a href="index.html">Pagina principală</a>
+          <a href="profesor-dashboard.html">Pagina principală</a>
           <a href="calendar.html">Calendar</a>
           <a href="rezervari.html">Rezervări</a>
           <a href="rooms.html">Săli</a>
@@ -47,11 +47,24 @@
         </nav>
       </div>
       <div class="main-content">
-        <!-- Conținutul principal al paginii va fi aici -->
+        
+        <div id="linksCardContainer" class="links-card-container">
+          <div class="booking-options">
+            <a href="calendar.html" class="booking-option-link">
+              <button class="booking-option">
+                <ion-icon name="calendar-outline" style="font-size: 30px;"></ion-icon>
+                <span class="text">Rezervă sală</span>
+              </button>
+            </a>
+          </div>      
+        </div>
+
         <div id="userCardContainer" class="user-card-container"></div>
       </div>
     </div>
 
     <script type="module" src="./js/profesor-dashboard.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
   </body>
 </html>

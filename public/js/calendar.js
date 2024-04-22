@@ -1,44 +1,32 @@
-import { auth, database, analytics, sendPasswordResetEmail, signInWithEmailAndPassword, ref, set, get } from './firebaseConfig.js';
+// Importă modulele FullCalendar folosind Skypack
+import { Calendar } from 'https://cdn.skypack.dev/@fullcalendar/core';
+import dayGridPlugin from 'https://cdn.skypack.dev/@fullcalendar/daygrid';
+import interactionPlugin from 'https://cdn.skypack.dev/@fullcalendar/interaction';
+import listPlugin from 'https://cdn.skypack.dev/@fullcalendar/list';
 
 document.addEventListener('DOMContentLoaded', function() {
-  var calendarEl = document.getElementById('calendar');
-
-  var calendar = new FullCalendar.Calendar(calendarEl, {
+  const calendarEl = document.getElementById('calendar');
+  const calendar = new Calendar(calendarEl, {
+    plugins: [dayGridPlugin, interactionPlugin, listPlugin],
     initialView: 'dayGridMonth',
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      right: 'dayGridMonth,listWeek'
     },
-    // Opționale: adaugă alte opțiuni cum ar fi butoane, interacțiuni etc.
-    dateClick: function(info) {
-      // Handler pentru click pe o dată
-      alert('Date: ' + info.dateStr);
-      // Arată formularul de adăugare eveniment sau deschide un popup/modal
-    },
-    events: {
-      // URL-ul endpoint-ului tău pentru a prelua evenimentele utilizatorului
-      url: '/path/to/your/events/api',
-      method: 'GET'
-    },
-    selectable: true,
-    selectHelper: true,
-    select: function(start, end) {
-      // Handler pentru selectarea unui interval de timp
-      var title = prompt('Event Title:');
-      if (title) {
-        calendar.addEvent({
-          title: title,
-          start: start,
-          end: end,
-          allDay: true
-        });
-        // Adaugă evenimentul în backend-ul tău
-      }
-      calendar.unselect();
-    },
+    events: [
+        // Exemplu de eveniment
+        {
+            title: 'Our anniversary <3',
+            start: '2024-04-23'
+        }
+        // Poti adauga mai multe evenimente aici
+    ],
     editable: true,
-    // alte opțiuni ...
+    selectable: true,
+    selectMirror: true,
+    dayMaxEvents: true
+    // Adaugă aici alte opțiuni specifice
   });
 
   calendar.render();
