@@ -1,7 +1,7 @@
 // js/firebaseConfig.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
 import { updateProfile, getAuth, signOut, sendPasswordResetEmail, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
-import { remove, query, child, orderByChild, equalTo, update, push, getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+import { remove, query, child, orderByChild, equalTo, update, push, getDatabase, ref, set, get, startAt, endAt } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-analytics.js";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL} from "https://www.gstatic.com/firebasejs/9.6.10/firebase-storage.js";
 
@@ -28,6 +28,6 @@ export { onAuthStateChanged };
 export { signOut };
 export { sendPasswordResetEmail };
 
-export { push, update, ref, set, get};
+export { push, update, ref, set, get, startAt, endAt};
 export { remove, query, child, orderByChild, equalTo, updateProfile};
 export { storage, getStorage, storageRef, uploadBytes, getDownloadURL };
