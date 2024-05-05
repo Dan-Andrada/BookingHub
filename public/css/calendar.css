@@ -49,21 +49,79 @@
   display: block;
 }
 
+/* Container general pentru controale */
+.controls-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background-color: #f0f0f0;
+  border-top: none;
+  border-bottom: 2px solid #ccc;
+}
+
+.select-container {
+  position: relative;
+  display: inline-block;
+  width: 220px; /* Lățimea dorită pentru select */
+  height: 35px; /* Înălțimea dorită */
+  line-height: 40px; /* Alinează textul vertical */
+  border: 2px solid #007BFF; /* Contur albastru */
+  background-color: #FFFFFF; /* Fundal alb */
+  border-radius: 5px; /* Colțuri rotunjite */
+  overflow: hidden; /* Ascunde părțile selectului ce depășesc dimensiunea */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Adaugă o umbră subtilă */
+}
+
+.filter-select-calendar {
+  position: absolute; /* Poziționare absolută pentru a umple containerul */
+  top: 0;
+  left: 0;
+  width: 100%; /* Ocupă întregul container */
+  height: 100%; /* Înălțimea completă a containerului */
+  border: none; /* Fără bordură */
+  padding: 0 10px; /* Spațiu intern pe stânga și dreapta */
+  -webkit-appearance: none; /* Ascunde dropdown-ul implicit pentru WebKit/Blink */
+  -moz-appearance: none; /* Ascunde dropdown-ul implicit pentru Firefox */
+  appearance: none; /* Ascunde dropdown-ul implicit standard */
+  font-size: 16px; /* Dimensiunea fontului */
+  color: #333; /* Culoare text */
+  cursor: pointer; /* Schimbă cursorul pentru a indica posibilitatea de selecție */
+  outline: none; /* Fără contur la focus */
+  background: transparent; /* Fundal transparent */
+}
+
+.select-container::after {
+  content: '\25BC'; /* Caracter pentru săgeată îndreptată în jos */
+  position: absolute;
+  right: 10px;
+  top: 0;
+  height: 100%;
+  line-height: 40px; /* Alinează săgeata vertical */
+  padding: 0 15px; /* Spațiu pe lateral pentru săgeată */
+  background-color: #FFFFFF; /* Fundal pentru zona săgeții */
+  color: #333; /* Culoare săgeată */
+  pointer-events: none; /* Nu permite evenimente de mouse pe săgeată */
+}
+
+/* Ajustează stilurile la focus pentru a menține estetica */
+.filter-select-calendar:focus {
+  border-color: #0056b3; /* Schimbă culoarea bordurii la focus */
+}
+
+/* Stilizarea butonului */
 #addEventButton {
-  background-color: #2e4a9e; 
-  color: white; 
-  border: none; 
-  padding: 10px 15px; 
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
   border-radius: 5px;
-  cursor: pointer; 
+  cursor: pointer;
   font-size: 16px;
-  position: absolute; 
-  bottom: 20px; 
-  left: 20px; 
 }
 
 #addEventButton:hover {
-  background-color: #0056b3; 
+  background-color: #0056b3;
 }
 
 .overlay {
@@ -114,7 +172,7 @@
   font-family: 'Arial', sans-serif;
   width: 100%;
   padding: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
@@ -262,3 +320,4 @@
 .dropdown-item:hover {
   background-color: #f1f1f1;
 }
+
