@@ -6,11 +6,18 @@
     <link rel="stylesheet" href="./css/calendar.css" />
   </head>
   <body>
+    
     <div class="calendar-container">
+      <div class="controls-wrapper">
+          <div class="select-container">
+              <select id="filter-select-calendar" class="filter-select-calendar">
+                  <option value="all">Toate evenimentele</option>
+              </select>
+          </div>
+          <button id="addEventButton">Adaugă Eveniment</button>
+      </div>
       <div id="calendar"></div>
-    </div>
-
-    <button id="addEventButton">Adaugă Eveniment</button>
+  </div>  
 
     <div id="overlay" class="overlay" style="display: none"></div>
     <div id="eventPopup" class="event-popup" style="display: none">
@@ -59,6 +66,11 @@
         <label for="eventDescription">Descriere:</label>
         <textarea id="eventDescription" name="eventDescription"></textarea>
 
+        <label for="filter-select-form">Evenimentul este destinat:</label>
+        <select id="filter-select-form" name="filter-select-form" required>
+          <option value="">Alege o etichetă</option>
+        </select>
+
         <label for="eventLocation">Locație:</label>
         <div class="form-container">
           <input type="text" id="eventLocation" autocomplete="off" required />
@@ -77,43 +89,16 @@
             class="recurrence-group"
             style="display: none"
           >
-            <label for="recurEveryWeek">Repetă la fiecare:</label>
+            <label for="recurEveryWeek">Pentru urmatoarele:</label>
             <input
               type="number"
               id="recurEveryWeek"
               name="recurEveryWeek"
               min="1"
+              max="14"
               value="1"
             />
             săptămână(săptămâni)
-            <div class="weeklyOptions">
-              <label
-                ><input type="checkbox" name="weekDays" value="1" /> Luni</label
-              >
-              <label
-                ><input type="checkbox" name="weekDays" value="2" />
-                Marți</label
-              >
-              <label
-                ><input type="checkbox" name="weekDays" value="3" />
-                Miercuri</label
-              >
-              <label
-                ><input type="checkbox" name="weekDays" value="4" /> Joi</label
-              >
-              <label
-                ><input type="checkbox" name="weekDays" value="5" />
-                Vineri</label
-              >
-              <label
-                ><input type="checkbox" name="weekDays" value="6" />
-                Sâmbătă</label
-              >
-              <label
-                ><input type="checkbox" name="weekDays" value="7" />
-                Duminică</label
-              >
-            </div>
           </div>
 
         <button type="submit">Rezervă</button>
