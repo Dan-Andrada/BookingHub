@@ -1,21 +1,26 @@
-import {
-  auth,
-  database,
-  analytics,
-  ref,
-  set,
-  get,
-  query,
-  orderByChild,
-  startAt,
-  endAt,
-  push,
-} from "./firebaseConfig.js";
+import { auth, database, ref, set, get, push, query, orderByChild, equalTo} from "./firebaseConfig.js";
 import { Calendar } from "https://cdn.skypack.dev/@fullcalendar/core";
 import dayGridPlugin from "https://cdn.skypack.dev/@fullcalendar/daygrid";
 import timeGridPlugin from "https://cdn.skypack.dev/@fullcalendar/timegrid";
 import interactionPlugin from "https://cdn.skypack.dev/@fullcalendar/interaction";
 import listPlugin from "https://cdn.skypack.dev/@fullcalendar/list";
+
+function getUserInfo(userId, callback) {
+  const userRef = ref(database, `users/${userId}`);
+  get(userRef)
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        callback(snapshot.val());
+      } else {
+        console.log("No user data found for ID:", userId);
+        callback(null);
+      }
+    })
+    .catch((error) => {
+      console.error("Failed to retrieve user data:", error);
+      callback(null);
+    });
+}
 
 document.addEventListener("DOMContentLoaded", function () {
   const calendarEl = document.getElementById("calendar");
@@ -23,7 +28,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const eventPopup = document.getElementById("eventPopup");
   const addEventForm = document.getElementById("addEventForm");
   const eventSelect = document.getElementById("event-type-select");
-  const filterSelectCalendar = document.getElementById("filter-select-calendar");
+  const filterSelectCalendar = document.getElementById(
+    "filter-select-calendar"
+  );
   const filterSelectForm = document.getElementById("filter-select-form");
   const overlay = document.getElementById("overlay");
 
@@ -59,70 +66,128 @@ document.addEventListener("DOMContentLoaded", function () {
       day: "Zi",
       list: "Listă",
     },
+    dayMaxEvents: 2,
+    moreLinkContent: function (args) {
+      return "+" + args.num + " mai multe";
+    },
+    moreLinkClick: "popover",
+    eventClick: function (info) {
+      const event = info.event;
+      const eventTypeClass = `event-type-${event.extendedProps.eventType}`;
+      getUserInfo(event.extendedProps.userId, function (userData) {
+        let userNameDisplay = userData
+          ? `${userData.firstName} ${userData.lastName}`
+          : "Unknown User";
+        let popoverContent = `
+          <div>
+            <strong>${event.title}</strong><br/>
+            <strong>📍</strong> ${event.extendedProps.location}<br/>
+            <strong>📃</strong> ${event.extendedProps.description || "N/A"}<br/>
+            <strong>🕒</strong> ${new Date(
+              event.start
+            ).toLocaleTimeString()} - ${new Date(
+          event.end
+        ).toLocaleTimeString()}<br/>
+            <strong>👤</strong> ${userNameDisplay}
+          </div>
+        `;
+        let popoverElement = document.createElement("div");
+        popoverElement.className = `event-popover ${eventTypeClass}`;
+        popoverElement.innerHTML = popoverContent;
+        document.body.appendChild(popoverElement);
+        let popperInstance = Popper.createPopper(info.el, popoverElement, {
+          placement: "auto",
+          modifiers: [{ name: "offset", options: { offset: [0, 8] } }],
+        });
+
+        function hidePopoverOnClickOutside(event) {
+          if (
+            !popoverElement.contains(event.target) &&
+            !info.el.contains(event.target)
+          ) {
+            popoverElement.remove();
+            document.removeEventListener("click", hidePopoverOnClickOutside);
+          }
+        }
+        document.addEventListener("click", hidePopoverOnClickOutside);
+      });
+    },
   });
 
-  let currentFilter = 'all';  // Valoarea implicită pentru a afișa toate evenimentele
+  let currentFilter = "all";
 
   function loadEventsToCalendar() {
-    const bookingsRef = ref(database, "rezervari");
+    const bookingsRef = query(ref(database, "rezervari"), orderByChild("status"), equalTo("acceptat"));
+    //const bookingsRef = ref(database, "rezervari");
     get(bookingsRef)
       .then((snapshot) => {
         if (snapshot.exists()) {
-          calendar.removeAllEvents(); // Îndepărtează toate evenimentele pentru a evita duplicarea
-          const eventsToAdd = []; // Colectează evenimentele pentru adăugare
+          calendar.removeAllEvents();
+          const eventsToAdd = [];
           snapshot.forEach((childSnapshot) => {
             const event = childSnapshot.val();
             let eventStart = new Date(event.start);
             let eventEnd = new Date(event.end);
 
-            if (currentFilter === 'all' || event.filterType === currentFilter) {
+            if (currentFilter === "all" || event.filterType === currentFilter) {
               if (event.recurrence && event.recurrence.type === "weekly") {
                 for (let i = 0; i < event.recurrence.count; i++) {
-                  eventsToAdd.push(createEventObject(event, new Date(eventStart), new Date(eventEnd)));
+                  eventsToAdd.push(
+                    createEventObject(
+                      event,
+                      new Date(eventStart),
+                      new Date(eventEnd)
+                    )
+                  );
                   eventStart.setDate(eventStart.getDate() + 7);
                   eventEnd.setDate(eventEnd.getDate() + 7);
                 }
               } else {
-                eventsToAdd.push(createEventObject(event, eventStart, eventEnd));
+                eventsToAdd.push(
+                  createEventObject(event, eventStart, eventEnd)
+                );
               }
             }
           });
-          // Adaugă toate evenimentele odată
-          eventsToAdd.forEach(event => calendar.addEvent(event));
-          calendar.render(); // Reîmprospătează evenimentele o singură dată după adăugare
-        } else {
-          console.log("No events found");
+          calendar.removeAllEvents();
+          eventsToAdd.forEach((event) => calendar.addEvent(event));
+          calendar.render();
         }
       })
       .catch((error) => {
         console.error("Error loading events:", error);
       });
-}
+  }
 
-function createEventObject(event, start, end) {
-  return {
-    title: event.title + " (" + event.location + ")",
-    start: start.toISOString(),
-    end: end.toISOString(),
-    backgroundColor: determineEventColor(event.eventType),
-    extendedProps: {
-      location: event.location,
-      eventType: event.eventType,
-    },
-  };
-}
+  function createEventObject(event, start, end) {
+    return {
+      title: event.title + " (" + event.location + ")",
+      start: start.toISOString().replace("Z", ""),
+      end: end.toISOString().replace("Z", ""),
+      backgroundColor: determineEventColor(event.eventType),
+      borderColor: determineEventColor(event.eventType),
+      textColor: "#ffffff",
+      extendedProps: {
+        location: event.location,
+        eventType: event.eventType,
+        description: event.description,
+        userId: event.userId,
+      },
+    };
+  }
 
- 
-  function determineEventColor(eventSelect) {
-    switch (eventSelect) {
+  function determineEventColor(eventType) {
+    switch (eventType) {
       case "curs":
-        return "#007bff"; 
+        return "#007bff"; // albastru
       case "laborator":
-        return "#28a745"; 
+        return "#28a745"; // verde
       case "seminar":
-        return "#dc3545"; 
+        return "#dc3545"; //roz
+      case "examen":
+        return "#dcdc38"; //galben
       default:
-        return "#6c757d"; 
+        return "#6c757d"; //gri
     }
   }
 
@@ -132,9 +197,9 @@ function createEventObject(event, start, end) {
   overlay.addEventListener("click", closeAddEventPopup);
   addEventForm.addEventListener("submit", submitEventForm);
   addEventForm.addEventListener("reset", closeAddEventPopup);
-  filterSelectCalendar.addEventListener('change', function() {
+  filterSelectCalendar.addEventListener("change", function () {
     currentFilter = this.value;
-    loadEventsToCalendar();  // Reface interogarea și reîncarcă evenimentele conform noului filtru
+    loadEventsToCalendar();
   });
 
   document
@@ -154,7 +219,6 @@ function createEventObject(event, start, end) {
     endDateInput.min = dateNow;
     endDateInput.value = dateNow;
 
-    // Populate start time options
     for (let hour = 8; hour <= 20; hour += 2) {
       const option = document.createElement("option");
       option.value = `${hour.toString().padStart(2, "0")}:00`;
@@ -162,15 +226,14 @@ function createEventObject(event, start, end) {
       startTimeInput.appendChild(option);
     }
 
-    // Set end date the same as start date initially and on change
     startDateInput.addEventListener("change", function () {
       endDateInput.value = this.value;
-      startTimeInput.dispatchEvent(new Event("change")); // Update end time options when start date changes
+      startTimeInput.dispatchEvent(new Event("change"));
     });
 
-    // Populate end time options dynamically based on start time selection
     startTimeInput.addEventListener("change", function () {
-      endTimeInput.innerHTML = ""; // Clear previous options
+      console.log("Start time changed");
+      endTimeInput.innerHTML = "";
       const selectedHour = parseInt(this.value.split(":")[0], 10);
       for (let hour = selectedHour + 2; hour <= 22; hour += 2) {
         const option = document.createElement("option");
@@ -185,20 +248,33 @@ function createEventObject(event, start, end) {
       }
     });
 
-    startTimeInput.dispatchEvent(new Event("change")); // Trigger change to populate end time initially
+    startTimeInput.dispatchEvent(new Event("change"));
 
-    // Suggest next start time
     suggestNextStartTime();
   }
 
-  // Function to suggest next start time
   function suggestNextStartTime() {
     const now = new Date();
-    const currentHour = now.getHours();
+    let currentHour = now.getHours();
     const currentMinute = now.getMinutes();
-    const roundedHour = currentMinute >= 30 ? currentHour + 1 : currentHour;
-    const suggestedHour = roundedHour < 22 ? roundedHour : 22;
-    const suggestedTime = `${suggestedHour.toString().padStart(2, "0")}:00`;
+
+    if (currentHour >= 22) {
+      return;
+    }
+
+    if (currentHour % 2 !== 0) {
+      currentHour++;
+    }
+
+    if (currentHour === 24) {
+      currentHour = 0;
+    }
+
+    if (currentHour >= 22) {
+      return;
+    }
+
+    const suggestedTime = `${currentHour.toString().padStart(2, "0")}:00`;
     document.getElementById("eventStartTime").value = suggestedTime;
   }
 
@@ -237,27 +313,30 @@ function createEventObject(event, start, end) {
 
   function populateFilterSelect(filterSelect) {
     const filterRef = ref(database, "filtre");
-    get(filterRef).then((snapshot) => {
-      if (snapshot.exists()) {
-        filterSelect.innerHTML = '<option value="all">Toate evenimentele</option>'; // Reset and add default option
-        Object.values(snapshot.val()).forEach((filterType) => {
-          const optionElement = document.createElement("option");
-          optionElement.value = filterType;
-          optionElement.textContent = filterType;
-          filterSelect.appendChild(optionElement);
-        });
-      } else {
-        console.log("No filters found.");
-      }
-    }).catch((error) => {
-      console.error("Error loading filters: ", error);
-    });
+    get(filterRef)
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          filterSelect.innerHTML =
+            '<option value="all">Toate evenimentele</option>'; // Reset and add default option
+          Object.values(snapshot.val()).forEach((filterType) => {
+            const optionElement = document.createElement("option");
+            optionElement.value = filterType;
+            optionElement.textContent = filterType;
+            filterSelect.appendChild(optionElement);
+          });
+        } else {
+          console.log("No filters found.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error loading filters: ", error);
+      });
   }
 
   document
     .getElementById("eventLocation")
     .addEventListener("input", function (e) {
-      const inputText = e.target.value.toLowerCase(); // Convert input to lower case for case-insensitive comparison
+      const inputText = e.target.value.toLowerCase();
       updateLocationSuggestions(inputText);
     });
 
@@ -267,15 +346,13 @@ function createEventObject(event, start, end) {
       .then((snapshot) => {
         const locationList = document.getElementById("locationList");
         locationList.innerHTML = "";
-        let count = 0; // Initialize counter for limiting the results
+        let count = 0;
         if (snapshot.exists()) {
           locationList.style.display = "block";
           snapshot.forEach((childSnapshot) => {
             if (count < 3) {
-              // Only process if less than 3 have been added
               const room = childSnapshot.val();
               if (room.nume_sala.toLowerCase().includes(inputText)) {
-                // Case-insensitive search
                 const item = document.createElement("div");
                 item.className = "dropdown-item";
                 item.innerHTML = `
@@ -298,11 +375,11 @@ function createEventObject(event, start, end) {
                   locationList.style.display = "none";
                 };
                 locationList.appendChild(item);
-                count++; // Increment the counter
+                count++;
               }
             }
           });
-          if (count === 0) locationList.style.display = "none"; // Hide if no results
+          if (count === 0) locationList.style.display = "none";
         } else {
           locationList.style.display = "none";
         }
@@ -327,6 +404,7 @@ function createEventObject(event, start, end) {
   function submitEventForm(event) {
     event.preventDefault();
 
+    const userId = auth.currentUser.uid;
     const eventName = document.getElementById("eventName").value;
     const eventDescription = document.getElementById("eventDescription").value;
     const eventType = document.getElementById("event-type-select").value;
@@ -339,48 +417,89 @@ function createEventObject(event, start, end) {
     const recurrenceType = document.getElementById("recurrence").value;
     const recurrenceCount = document.getElementById("recurEveryWeek").value
       ? parseInt(document.getElementById("recurEveryWeek").value)
-      : null; // Assume that this field may not exist
+      : null;
 
     const fullStart = new Date(`${startDate}T${startTime}:00Z`);
     const fullEnd = new Date(`${endDate}T${endTime}:00Z`);
+    const now = new Date();
+
+    if (fullStart < now) {
+      toastr.error("Nu puteți face o rezervare în trecut!", {
+        timeOut: 5000,
+      });
+      return;
+    }
 
     let eventData = {
       title: eventName,
       start: fullStart.toISOString(),
       end: fullEnd.toISOString(),
+      userId: userId,
       location: location,
       description: eventDescription,
       eventType: eventType,
-      filterType: filterType
+      filterType: filterType,
+      status: "pending"
     };
 
-    // Include the recurrence only if it's specifically defined and not 'none'
     if (recurrenceType && recurrenceType !== "none" && recurrenceCount) {
       eventData.recurrence = {
         type: recurrenceType,
         count: recurrenceCount,
       };
     }
-
     addBooking(eventData);
   }
 
   function addBooking(eventData) {
+
+    const user = auth.currentUser;
+  if (!user) {
+    console.error("No user logged in");
+    return;
+  }
+
+  console.log("Current user ID:", user.uid); // Log the user's UID
+
+  // Retrieve user data to check role
+  get(ref(database, `users/${user.uid}`)).then((snapshot) => {
+    if (snapshot.exists()) {
+      const userInfo = snapshot.val();
+      console.log("User info retrieved:", userInfo); // Log the user info
+
+      // Check if the user is a secretary
+      if (userInfo.role === 'secretar') {
+        eventData.status = 'acceptat'; // Approve the booking directly
+        console.log("Booking automatically approved for secretary.");
+      } else {
+        eventData.status = 'pending'; // Otherwise, keep the status as pending
+        console.log("Booking set to pending for non-secretary user.");
+      }
+
     const bookingsRef = ref(database, "rezervari");
     const newBookingRef = push(bookingsRef);
     set(newBookingRef, eventData)
       .then(() => {
-        console.log("Booking added successfully!");
+        console.log("Booking added successfully with pending status!");
         calendar.addEvent({
           ...eventData,
           title: eventData.title + " (" + eventData.location + ")",
+          start: new Date(eventData.start).toISOString(),
+          end: new Date(eventData.end).toISOString(),
         });
+        loadEventsToCalendar();
         closeAddEventPopup();
       })
       .catch((error) => {
         console.error("Failed to add booking:", error);
       });
-  }
+    } else {
+      console.error("User data not found");
+    }
+  }).catch((error) => {
+    console.error("Error retrieving user data:", error);
+  });
+}
 
   function showAddEventPopup() {
     updateDateTimeInputs();
