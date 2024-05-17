@@ -49,7 +49,6 @@
   display: block;
 }
 
-/* Container general pentru controale */
 .controls-wrapper {
   display: flex;
   justify-content: space-between;
@@ -63,53 +62,51 @@
 .select-container {
   position: relative;
   display: inline-block;
-  width: 220px; /* Lățimea dorită pentru select */
-  height: 35px; /* Înălțimea dorită */
-  line-height: 40px; /* Alinează textul vertical */
-  border: 2px solid #007BFF; /* Contur albastru */
-  background-color: #FFFFFF; /* Fundal alb */
-  border-radius: 5px; /* Colțuri rotunjite */
-  overflow: hidden; /* Ascunde părțile selectului ce depășesc dimensiunea */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Adaugă o umbră subtilă */
+  width: 220px; 
+  height: 35px;
+  line-height: 40px; 
+  border: 2px solid #007BFF; 
+  background-color: #FFFFFF; 
+  border-radius: 5px; 
+  overflow: hidden; 
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
 }
 
 .filter-select-calendar {
-  position: absolute; /* Poziționare absolută pentru a umple containerul */
+  position: absolute;
   top: 0;
   left: 0;
-  width: 100%; /* Ocupă întregul container */
-  height: 100%; /* Înălțimea completă a containerului */
-  border: none; /* Fără bordură */
-  padding: 0 10px; /* Spațiu intern pe stânga și dreapta */
-  -webkit-appearance: none; /* Ascunde dropdown-ul implicit pentru WebKit/Blink */
-  -moz-appearance: none; /* Ascunde dropdown-ul implicit pentru Firefox */
-  appearance: none; /* Ascunde dropdown-ul implicit standard */
-  font-size: 16px; /* Dimensiunea fontului */
-  color: #333; /* Culoare text */
-  cursor: pointer; /* Schimbă cursorul pentru a indica posibilitatea de selecție */
-  outline: none; /* Fără contur la focus */
-  background: transparent; /* Fundal transparent */
+  width: 100%; 
+  height: 100%; 
+  border: none; 
+  padding: 0 10px; 
+  -webkit-appearance: none;  
+  -moz-appearance: none; 
+  appearance: none; 
+  font-size: 16px; 
+  color: #333; 
+  cursor: pointer; 
+  outline: none; 
+  background: transparent; 
 }
 
 .select-container::after {
-  content: '\25BC'; /* Caracter pentru săgeată îndreptată în jos */
+  content: '\25BC'; 
   position: absolute;
   right: 10px;
   top: 0;
   height: 100%;
-  line-height: 40px; /* Alinează săgeata vertical */
-  padding: 0 15px; /* Spațiu pe lateral pentru săgeată */
-  background-color: #FFFFFF; /* Fundal pentru zona săgeții */
-  color: #333; /* Culoare săgeată */
-  pointer-events: none; /* Nu permite evenimente de mouse pe săgeată */
+  line-height: 40px; 
+  padding: 0 15px;
+  background-color: #FFFFFF; 
+  color: #333; 
+  pointer-events: none; 
 }
 
-/* Ajustează stilurile la focus pentru a menține estetica */
 .filter-select-calendar:focus {
-  border-color: #0056b3; /* Schimbă culoarea bordurii la focus */
+  border-color: #0056b3; 
 }
 
-/* Stilizarea butonului */
 #addEventButton {
   padding: 8px 16px;
   background-color: #007bff;
@@ -262,7 +259,7 @@
 
 .form-container {
   position: relative;
-  width: 300px; /* Adjust width as needed */
+  width: 300px; 
 }
 
 #eventLocation {
@@ -294,22 +291,22 @@
 
 .icon {
   margin-right: 10px;
-  color: #4CAF50; /* Green for available rooms */
+  color: #4CAF50; 
 }
 
 .room-details {
   flex-grow: 1;
   display: flex;
-  flex-direction: column; /* Makes sub-items (name and availability) stack vertically */
+  flex-direction: column; 
 }
 
 .room-name {
-  font-weight: bold; /* Emphasize the room name */
+  font-weight: bold; 
 }
 
 .room-availability {
   font-size: 0.85em;
-  margin-top: 2px; /* Small space between name and availability */
+  margin-top: 2px; 
 }
 
 .room-capacity {
@@ -320,4 +317,63 @@
 .dropdown-item:hover {
   background-color: #f1f1f1;
 }
+
+.event-popover {
+  background: #ffffff; 
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  color: #333;
+  padding: 15px;
+  width: 250px; 
+  font-size: 0.9rem;
+  line-height: 1.4;
+  z-index: 100; 
+  position: absolute; 
+}
+
+.event-popover strong {
+  color: #000;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.event-popover div {
+  margin-bottom: 10px; 
+}
+
+.event-popover {
+  background: white;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  font-size: 0.9rem;
+  z-index: 1050;
+}
+
+.event-type-curs {
+  border-left: 5px solid #007bff; /* Albastru pentru curs */
+}
+
+.event-type-laborator {
+  border-left: 5px solid #28a745; /* Verde pentru laborator */
+}
+
+.event-type-seminar {
+  border-left: 5px solid #dc3545; /* Roz pentru seminar */
+}
+
+.event-type-examen {
+  border-left: 5px solid #dcdc38; /* Galben pentru examen */
+}
+
+.event-type-default {
+  border-left: 5px solid #6c757d; /* Gri pentru default */
+}
+
+.fc-event {
+  border-radius: 4px;
+  border: 1px solid transparent; 
+}
+
+
 

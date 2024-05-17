@@ -1,54 +1,29 @@
-import { update, updateProfile, auth, database, signOut, set, ref, get, onAuthStateChanged, storage, storageRef, uploadBytes, getDownloadURL } from './firebaseConfig.js';
+import {
+  update,
+  updateProfile,
+  auth,
+  database,
+  signOut,
+  set,
+  ref,
+  get,
+  onAuthStateChanged,
+  storage,
+  storageRef,
+  uploadBytes,
+  getDownloadURL,
+} from "./firebaseConfig.js";
+import {
+  initializeUserProfile,
+  uploadProfileImage,
+  signOutUser,
+} from "./userDetails.js";
 
-const userImage = document.getElementById("userImage");
-const imageUpload = document.getElementById("imageUpload");
 
 document.addEventListener("DOMContentLoaded", () => {
-  const logoutLink = document.getElementById("logout-link");
-
-  auth.onAuthStateChanged((user) => {
-    if (!user) {
-      window.location.replace("/index.html");
-    } else {
-      const uid = user.uid;
-      const userRef = ref(database, "users/" + uid);
-
-      get(userRef)
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            const userData = snapshot.val();
-            getUserDetails().then(createAndAppendUserCard).catch(console.error);
-            const userNameDisplay = document.getElementById("user-name");
-
-            userNameDisplay.textContent = userData.firstName || "Nume";
-
-            if (userData.profilePicture) {
-              userImage.src = userData.profilePicture;
-            }
-          } else {
-            console.log("Nu s-au găsit date pentru utilizator.");
-          }
-        })
-        .catch((error) => {
-          console.error("Eroare la preluarea datelor utilizatorului:", error);
-        });
-    }
-  });
-
-  function createAndAppendUserCard(userData) {
-    const container = document.getElementById("userCardContainer");
-    const card = document.createElement("div");
-    card.className = "user-card";
-
-    card.innerHTML = `
-    <h3>${userData.firstName} ${userData.lastName || ""}</h3>
-    <p>${userData.role}</p>
-    <p>Număr matricol ${userData.studentNumber || 'N/A'}</p>
-    <p>An de studiu ${userData.studyYear || 'N/A'}</p>
-    `;
-
-    container.appendChild(card);
-  }
+  initializeUserProfile();
+  uploadProfileImage();
+  signOutUser();
 
   function getUserDetails() {
     return new Promise((resolve, reject) => {
@@ -79,78 +54,31 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-  
 
-  
-  if (logoutLink) {
-    logoutLink.addEventListener("click", (event) => {
-      event.preventDefault();
-      signOut(auth)
-        .then(() => {
-          console.log("User signed out.");
-          window.location.replace("/index.html");
-        })
-        .catch((error) => {
-          console.error("Sign out error", error);
-        });
-    });
-  }
-});
+  function createAndAppendUserCard(userData) {
+    const container = document.getElementById("userCardContainer");
+    const card = document.createElement("div");
+    card.className = "user-card";
 
-userImage.addEventListener("click", () => {
-  imageUpload.click();
-});
+    card.innerHTML = `
+    <h3>${userData.firstName} ${userData.lastName || ""}</h3>
+    <p>${userData.role}</p>
+    <p>Număr matricol ${userData.studentNumber || 'N/A'}</p>
+    <p>An de studiu ${userData.studyYear || 'N/A'}</p>
+    `;
 
-imageUpload.addEventListener("change", function (event) {
-  const file = event.target.files[0];
-  if (!file) {
-    console.log("No file selected.");
-    return;
+    container.appendChild(card);
   }
 
-  const user = auth.currentUser;
-  if (user) {
-    const filePath = `profileImages/${user.uid}/${file.name}`;
-    const fileRef = storageRef(storage, filePath);
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      getUserDetails(user).then(userData => {
+        createAndAppendUserCard(userData);
+      }).catch(console.error);
+    } else {
+      console.error("Utilizatorul nu este autentificat");
+      window.location.replace("/login.html");
+    }
+  });
 
-    uploadBytes(fileRef, file)
-      .then((snapshot) => {
-        console.log("Uploaded a file!");
-
-        getDownloadURL(snapshot.ref)
-          .then((downloadURL) => {
-            console.log("File available at", downloadURL);
-            userImage.src = downloadURL;
-
-            updateProfile(user, {
-              photoURL: downloadURL,
-            })
-              .then(() => {
-                console.log("Profile updated successfully!");
-                update(ref(database, "users/" + user.uid), {
-                  profilePicture: downloadURL,
-                });
-              })
-              .then(() => {
-                console.log("User profile image updated in database");
-              })
-              .catch((error) => {
-                console.error(
-                  "Error updating user profile image in database",
-                  error
-                );
-              });
-          })
-          .catch((error) => {
-            console.error("Error getting download URL", error);
-          });
-      })
-      .catch((error) => {
-        console.error("Error uploading file", error);
-      });
-  } else {
-    console.log("No authenticated user.");
-  }
 });
-
-

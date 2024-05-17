@@ -1,0 +1,82 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e3eaf5;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+.booking-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+    margin: auto;
+    max-width: 700px;
+    padding: 20px;
+}
+
+h1, h2 {
+    color: #34568B;
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.booking-list, .approval-list {
+    list-style: none;
+    padding: 0;
+}
+
+.booking-list li, .approval-list li {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-top: 10px;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.booking-list li:hover, .approval-list li:hover {
+    background-color: #f0f0f0;
+    border-color: #b0b0b0;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.action-button {
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.2s;
+    margin: 0 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+}
+
+.action-button.accept-icon {
+    background-color: #4CAF50;
+}
+
+.action-button.accept-icon:hover {
+    background-color: #45a049;
+}
+
+.action-button.decline-icon {
+    background-color: #f44336;
+}
+
+.action-button.decline-icon:hover {
+    background-color: #e33126;
+}
+
+.secretary-approval {
+    margin-top: 40px;
+}
+

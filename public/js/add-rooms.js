@@ -1,4 +1,15 @@
-import {auth, database, query, child, orderByChild, equalTo, analytics, ref, set, get} from "./firebaseConfig.js";
+import {
+  auth,
+  database,
+  query,
+  child,
+  orderByChild,
+  equalTo,
+  analytics,
+  ref,
+  set,
+  get,
+} from "./firebaseConfig.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   auth.onAuthStateChanged((user) => {
