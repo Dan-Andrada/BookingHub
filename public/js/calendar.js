@@ -317,7 +317,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((snapshot) => {
         if (snapshot.exists()) {
           filterSelect.innerHTML =
-            '<option value="all">Toate evenimentele</option>'; // Reset and add default option
+            '<option value="all">Toate evenimentele</option>'; 
           Object.values(snapshot.val()).forEach((filterType) => {
             const optionElement = document.createElement("option");
             optionElement.value = filterType;
@@ -459,20 +459,18 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  console.log("Current user ID:", user.uid); // Log the user's UID
+  console.log("Current user ID:", user.uid); 
 
-  // Retrieve user data to check role
   get(ref(database, `users/${user.uid}`)).then((snapshot) => {
     if (snapshot.exists()) {
       const userInfo = snapshot.val();
-      console.log("User info retrieved:", userInfo); // Log the user info
+      console.log("User info retrieved:", userInfo); 
 
-      // Check if the user is a secretary
       if (userInfo.role === 'secretar') {
-        eventData.status = 'acceptat'; // Approve the booking directly
+        eventData.status = 'acceptat'; 
         console.log("Booking automatically approved for secretary.");
       } else {
-        eventData.status = 'pending'; // Otherwise, keep the status as pending
+        eventData.status = 'pending'; 
         console.log("Booking set to pending for non-secretary user.");
       }
 
@@ -481,6 +479,7 @@ document.addEventListener("DOMContentLoaded", function () {
     set(newBookingRef, eventData)
       .then(() => {
         console.log("Booking added successfully with pending status!");
+        if (eventData.status === 'acceptat') {
         calendar.addEvent({
           ...eventData,
           title: eventData.title + " (" + eventData.location + ")",
@@ -488,6 +487,7 @@ document.addEventListener("DOMContentLoaded", function () {
           end: new Date(eventData.end).toISOString(),
         });
         loadEventsToCalendar();
+      }
         closeAddEventPopup();
       })
       .catch((error) => {
