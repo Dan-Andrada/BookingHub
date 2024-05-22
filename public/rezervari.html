@@ -9,21 +9,40 @@
 <body>
     
     <div class="booking-container">
-        <h1>Rezervările Mele</h1>
-        <div id="myBookings" class="booking-list">
+        <section class="section-container my-bookings">
+            <h1>Rezervările Mele</h1>
+            <ul id="myBookings" class="booking-list">
+                
+            </ul>
+        </section>
 
-        </div>
-    
-        <div id="secretarySection" class="secretary-approval" style="display: none;">
+        <section class="section-container secretary-approval" id="secretarySection" style="display: none;">
             <h2>Cererile în așteptare</h2>
-            <div id="pendingRequests" class="approval-list">
-       
+            <ul id="pendingRequests" class="approval-list">
+
                 <li class="request-item">
                     <div class="request-info">Cerere de la: User123 pentru Sala 101</div>
                     <button class="action-button accept-icon" onclick="acceptBooking('idRezervare')">Acceptă</button>
         <button class="action-button decline-icon" onclick="declineBooking('idRezervare')">Refuză</button>
                 </li>
-            </div>
+                
+            </ul>
+        </section>
+
+        <section class="section-container upcoming-events">
+            <h2>Evenimente Următoare</h2>
+            <ul id="upcomingEvents">
+                
+            </ul>
+        </section>
+    </div>
+
+    <div id="declineModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Motivul refuzului</h2>
+            <textarea id="declineReason" placeholder="Introduceți motivul refuzului aici..."></textarea>
+            <button id="submitDecline" class="action-button submit-decline-button">Trimite</button>
         </div>
     </div>
 
