@@ -1,4 +1,14 @@
-import { auth, database, ref, set, get, push, query, orderByChild, equalTo} from "./firebaseConfig.js";
+import {
+  auth,
+  database,
+  ref,
+  set,
+  get,
+  push,
+  query,
+  orderByChild,
+  equalTo,
+} from "./firebaseConfig.js";
 import { Calendar } from "https://cdn.skypack.dev/@fullcalendar/core";
 import dayGridPlugin from "https://cdn.skypack.dev/@fullcalendar/daygrid";
 import timeGridPlugin from "https://cdn.skypack.dev/@fullcalendar/timegrid";
@@ -117,7 +127,11 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentFilter = "all";
 
   function loadEventsToCalendar() {
-    const bookingsRef = query(ref(database, "rezervari"), orderByChild("status"), equalTo("acceptat"));
+    const bookingsRef = query(
+      ref(database, "rezervari"),
+      orderByChild("status"),
+      equalTo("acceptat")
+    );
     //const bookingsRef = ref(database, "rezervari");
     get(bookingsRef)
       .then((snapshot) => {
@@ -195,12 +209,34 @@ document.addEventListener("DOMContentLoaded", function () {
   loadEventsToCalendar();
   addEventButton.addEventListener("click", showAddEventPopup);
   overlay.addEventListener("click", closeAddEventPopup);
-  addEventForm.addEventListener("submit", submitEventForm);
+
   addEventForm.addEventListener("reset", closeAddEventPopup);
   filterSelectCalendar.addEventListener("change", function () {
     currentFilter = this.value;
     loadEventsToCalendar();
   });
+
+  document.getElementById("addEventForm").addEventListener("submit", async function(event) {
+    event.preventDefault(); 
+  
+    const selectedLocation = document.getElementById("eventLocation").value;
+    const startInput = document.getElementById("eventStartDate").value + 'T' + document.getElementById("eventStartTime").value;
+    const endInput = document.getElementById("eventEndDate").value + 'T' + document.getElementById("eventEndTime").value;
+  
+    const startDate = new Date(startInput);
+    const endDate = new Date(endInput);
+
+    const isAvailable = await checkRoomAvailability(selectedLocation, startDate, endDate);
+  
+    if (!isAvailable) {
+      toastr.error("Sala selectată nu este disponibilă. Vă rugăm să alegeți altă sală.", {
+        timeOut: 5000,
+      });
+    } else {
+      this.submit(); 
+    }
+  });
+  
 
   document
     .getElementById("recurrence")
@@ -259,23 +295,30 @@ document.addEventListener("DOMContentLoaded", function () {
     const currentMinute = now.getMinutes();
 
     if (currentHour >= 22) {
-      return;
+      now.setDate(now.getDate() + 1);
+      currentHour = 8;
+    } else if (currentHour % 2 !== 0 || currentMinute > 0) {
+      currentHour += 2 - (currentHour % 2);
     }
 
-    if (currentHour % 2 !== 0) {
-      currentHour++;
+    if (currentHour >= 20) {
+      now.setDate(now.getDate() + 1);
+      currentHour = 8;
     }
 
-    if (currentHour === 24) {
-      currentHour = 0;
-    }
+    const suggestedStartTime = `${currentHour.toString().padStart(2, "0")}:00`;
+    const suggestedEndTime = `${(currentHour + 2)
+      .toString()
+      .padStart(2, "0")}:00`;
 
-    if (currentHour >= 22) {
-      return;
-    }
-
-    const suggestedTime = `${currentHour.toString().padStart(2, "0")}:00`;
-    document.getElementById("eventStartTime").value = suggestedTime;
+    document.getElementById("eventStartDate").value = now
+      .toISOString()
+      .split("T")[0];
+    document.getElementById("eventStartTime").value = suggestedStartTime;
+    document.getElementById("eventEndDate").value = now
+      .toISOString()
+      .split("T")[0]; // Același lucru pentru data de sfârșit
+    document.getElementById("eventEndTime").value = suggestedEndTime;
   }
 
   function handleRecurrenceChange() {
@@ -317,7 +360,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((snapshot) => {
         if (snapshot.exists()) {
           filterSelect.innerHTML =
-            '<option value="all">Toate evenimentele</option>'; 
+            '<option value="all">Toate evenimentele</option>';
           Object.values(snapshot.val()).forEach((filterType) => {
             const optionElement = document.createElement("option");
             optionElement.value = filterType;
@@ -340,54 +383,109 @@ document.addEventListener("DOMContentLoaded", function () {
       updateLocationSuggestions(inputText);
     });
 
-  function updateLocationSuggestions(inputText) {
-    const roomsRef = ref(database, "sali");
-    get(roomsRef)
+  function toLocalISOString(date) {
+    const offset = date.getTimezoneOffset() * 60000;
+    const localISOTime = new Date(date.getTime() - offset).toISOString();
+    return localISOTime;
+  }
+
+  function checkRoomAvailability(roomId, localStartDate, localEndDate) {
+    const startISO = toLocalISOString(localStartDate);
+    const endISO = toLocalISOString(localEndDate);
+  
+    console.log(`Checking availability for ${roomId} between ${startISO} and ${endISO}`);
+  
+    const bookingsRef = query(
+      ref(database, "rezervari"),
+      orderByChild("location"),
+      equalTo(roomId)
+    );
+  
+    return get(bookingsRef)
       .then((snapshot) => {
-        const locationList = document.getElementById("locationList");
-        locationList.innerHTML = "";
-        let count = 0;
+        let isAvailable = true;
         if (snapshot.exists()) {
-          locationList.style.display = "block";
-          snapshot.forEach((childSnapshot) => {
-            if (count < 3) {
-              const room = childSnapshot.val();
-              if (room.nume_sala.toLowerCase().includes(inputText)) {
-                const item = document.createElement("div");
-                item.className = "dropdown-item";
-                item.innerHTML = `
-                  <span class="icon">📚</span>
-                  <div class="room-details">
-                    <span class="room-name">${room.nume_sala}</span>
-                    <div class="room-availability" style="color: ${
-                      room.isAvailable ? "#4CAF50" : "#f44336"
-                    };">
-                      ${room.isAvailable ? "Disponibilă" : "Disponibilă"}
-                    </div>
-                  </div>
-                  <span class="room-capacity">Capacity: ${
-                    room.capacitate
-                  }</span>
-                `;
-                item.onclick = function () {
-                  document.getElementById("eventLocation").value =
-                    room.nume_sala;
-                  locationList.style.display = "none";
-                };
-                locationList.appendChild(item);
-                count++;
-              }
+          snapshot.forEach((reservationSnapshot) => {
+            const reservation = reservationSnapshot.val();
+            console.log(`Comparing with booking from ${reservation.start} to ${reservation.end}`);
+            if (startISO < reservation.end && endISO > reservation.start) {
+              console.log("Overlap found, room is not available");
+              isAvailable = false;
+              return true; // Break the loop on finding an overlap
             }
           });
-          if (count === 0) locationList.style.display = "none";
         } else {
-          locationList.style.display = "none";
+          console.log("No bookings found for this room.");
         }
+        console.log(`Room ${roomId} availability: ${isAvailable}`);
+        return isAvailable;
       })
       .catch((error) => {
-        console.error("Error fetching rooms:", error);
+        console.error("Failed to check room availability:", error);
+        return false; // Consider room unavailable on error
       });
   }
+  
+
+  function updateLocationSuggestions(inputText) {
+    const startInput = document.getElementById("eventStartDate").value + 'T' + document.getElementById("eventStartTime").value;
+    const endInput = document.getElementById("eventEndDate").value + 'T' + document.getElementById("eventEndTime").value;
+  
+    const startDate = new Date(startInput);
+    const endDate = new Date(endInput);
+  
+    const roomsRef = ref(database, "sali");
+    get(roomsRef).then(snapshot => {
+      const locationList = document.getElementById("locationList");
+      locationList.innerHTML = "";
+      let count = 0;
+      if (snapshot.exists()) {
+        locationList.style.display = "block";
+        snapshot.forEach(childSnapshot => {
+          if (count >= 3) return; 
+  
+          const room = childSnapshot.val();
+          const roomName = room.nume_sala;  
+ 
+          checkRoomAvailability(roomName, startDate, endDate).then(isAvailable => {
+            if (roomName.toLowerCase().includes(inputText.toLowerCase())) {
+              const item = document.createElement("div");
+              item.className = "dropdown-item";
+              item.innerHTML = `
+                <span class="icon">📚</span>
+                <div class="room-details">
+                  <span class="room-name">${roomName}</span>
+                  <div class="room-availability" style="color: ${isAvailable ? "#4CAF50" : "#f44336"};">
+                    ${isAvailable ? "Disponibilă" : "Indisponibilă"}
+                  </div>
+                </div>
+                <span class="room-capacity">Capacitate: ${room.capacitate}</span>
+              `;
+              item.onclick = function () {
+                document.getElementById("eventLocation").value = roomName;
+                locationList.style.display = "none";
+              };
+              locationList.appendChild(item);
+            }
+            count++;
+          });
+        });
+        if (count === 0) {
+          //locationList.innerHTML = "<div>Nicio sală disponibilă.</div>";
+          locationList.style.display = "block";
+        }
+      } else {
+       // locationList.innerHTML = "<div>Nicio sală disponibilă.</div>";
+        locationList.style.display = "block";
+      }
+    }).catch(error => {
+      console.error("Error fetching rooms:", error);
+      locationList.innerHTML = `<div>Eroare la încărcare: ${error.message}</div>`;
+      locationList.style.display = "block";
+    });
+  }
+  
+  
 
   document.addEventListener("click", function (event) {
     const locationList = document.getElementById("locationList");
@@ -439,7 +537,7 @@ document.addEventListener("DOMContentLoaded", function () {
       description: eventDescription,
       eventType: eventType,
       filterType: filterType,
-      status: "pending"
+      status: "pending",
     };
 
     if (recurrenceType && recurrenceType !== "none" && recurrenceCount) {
@@ -452,54 +550,55 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function addBooking(eventData) {
-
     const user = auth.currentUser;
-  if (!user) {
-    console.error("No user logged in");
-    return;
-  }
+    if (!user) {
+      console.error("No user logged in");
+      return;
+    }
 
-  console.log("Current user ID:", user.uid); 
+    console.log("Current user ID:", user.uid);
 
-  get(ref(database, `users/${user.uid}`)).then((snapshot) => {
-    if (snapshot.exists()) {
-      const userInfo = snapshot.val();
-      console.log("User info retrieved:", userInfo); 
+    get(ref(database, `users/${user.uid}`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const userInfo = snapshot.val();
+          console.log("User info retrieved:", userInfo);
 
-      if (userInfo.role === 'secretar') {
-        eventData.status = 'acceptat'; 
-        console.log("Booking automatically approved for secretary.");
-      } else {
-        eventData.status = 'pending'; 
-        console.log("Booking set to pending for non-secretary user.");
-      }
+          if (userInfo.role === "secretar") {
+            eventData.status = "acceptat";
+            console.log("Booking automatically approved for secretary.");
+          } else {
+            eventData.status = "pending";
+            console.log("Booking set to pending for non-secretary user.");
+          }
 
-    const bookingsRef = ref(database, "rezervari");
-    const newBookingRef = push(bookingsRef);
-    set(newBookingRef, eventData)
-      .then(() => {
-        console.log("Booking added successfully with pending status!");
-        if (eventData.status === 'acceptat') {
-        calendar.addEvent({
-          ...eventData,
-          title: eventData.title + " (" + eventData.location + ")",
-          start: new Date(eventData.start).toISOString(),
-          end: new Date(eventData.end).toISOString(),
-        });
-        loadEventsToCalendar();
-      }
-        closeAddEventPopup();
+          const bookingsRef = ref(database, "rezervari");
+          const newBookingRef = push(bookingsRef);
+          set(newBookingRef, eventData)
+            .then(() => {
+              console.log("Booking added successfully with pending status!");
+              if (eventData.status === "acceptat") {
+                calendar.addEvent({
+                  ...eventData,
+                  title: eventData.title + " (" + eventData.location + ")",
+                  start: new Date(eventData.start).toISOString(),
+                  end: new Date(eventData.end).toISOString(),
+                });
+                loadEventsToCalendar();
+              }
+              closeAddEventPopup();
+            })
+            .catch((error) => {
+              console.error("Failed to add booking:", error);
+            });
+        } else {
+          console.error("User data not found");
+        }
       })
       .catch((error) => {
-        console.error("Failed to add booking:", error);
+        console.error("Error retrieving user data:", error);
       });
-    } else {
-      console.error("User data not found");
-    }
-  }).catch((error) => {
-    console.error("Error retrieving user data:", error);
-  });
-}
+  }
 
   function showAddEventPopup() {
     updateDateTimeInputs();
