@@ -43,6 +43,63 @@ document.addEventListener("DOMContentLoaded", function () {
   );
   const filterSelectForm = document.getElementById("filter-select-form");
   const overlay = document.getElementById("overlay");
+  const exportCalendarButton = document.getElementById("exportCalendarButton");
+
+  exportCalendarButton.addEventListener("click", function() {
+    const events = calendar.getEvents();
+    if (events.length > 0) {
+      const icsData = createICSFromEvents(events);
+      downloadICSFile(icsData, 'export-calendar.ics');
+    } else {
+      alert("Nu există evenimente în calendar pentru a exporta.");
+    }
+  });
+
+  function createICSFromEvents(events) {
+    let icsComponents = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Your Organization//Your Calendar//EN'
+    ];
+
+    events.forEach(event => {
+      const start = formatDateToICS(new Date(event.start));
+      const end = formatDateToICS(new Date(event.end));
+      icsComponents.push(
+        'BEGIN:VEVENT',
+        `UID:${event.id}@yourdomain.com`,
+        `SUMMARY:${event.title}`,
+        `DTSTART:${start}`,
+        `DTEND:${end}`,
+        `DESCRIPTION:${event.extendedProps.description}`,
+        `LOCATION:${event.extendedProps.location}`,
+        'END:VEVENT'
+      );
+    });
+
+    icsComponents.push('END:VCALENDAR');
+    return icsComponents.join('\r\n');
+  }
+
+  function downloadICSFile(data, filename) {
+    const blob = new Blob([data], { type: 'text/calendar;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.style.display = 'none';
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  function formatDateToICS(date) {
+    if (!(date instanceof Date)) {
+        date = new Date(date);
+    }
+    
+    return date.toISOString();
+}
+
 
   if (
     !calendarEl ||
@@ -599,6 +656,9 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Error retrieving user data:", error);
       });
   }
+
+
+  
 
   function showAddEventPopup() {
     updateDateTimeInputs();
