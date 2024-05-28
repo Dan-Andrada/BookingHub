@@ -52,22 +52,24 @@ exports.sendBookingRequestEmail = functions.database.ref('/rezervari/{bookingId}
     return admin.database().ref(`/users/${reservation.userId}`).once('value').then(userSnapshot => {
       const userData = userSnapshot.val();
 
+      if (userData.role != "secretar") {
+
       const mailOptions = {
         from: '"UPT Booking Hub" <uptbookinghub@gmail.com>',
         to: 'maria.clipici@student.upt.ro',
         subject: 'Nouă Cerere de Rezervare',
         text: `Ai o nouă cerere de rezervare de la ${userData.firstName} ${userData.lastName} pentru evenimentul "${reservation.title}" în sala ${reservation.location}.`
       };
-
+      
       return mailTransport.sendMail(mailOptions)
         .then(() => console.log('Email de notificare trimis cu succes!'))
         .catch((error) => console.error('Eroare la trimiterea emailului:', error));
+    }
     }).catch(error => {
       console.error('Eroare la citirea datelor utilizatorului:', error);
       throw new functions.https.HttpsError('internal', 'Eroare la procesarea cererii de rezervare.');
     });
   });
-
 
 
   exports.sendBookingApprovalEmail = functions.database.ref('/rezervari/{bookingId}')
@@ -89,10 +91,25 @@ exports.sendBookingRequestEmail = functions.database.ref('/rezervari/{bookingId}
         return mailTransport.sendMail(mailOptions)
           .then(() => console.log('Email de confirmare trimis cu succes!'))
           .catch((error) => console.error('Eroare la trimiterea emailului de confirmare:', error));
-      }).catch(error => {
-        console.error('Eroare la citirea datelor utilizatorului:', error);
-        throw new functions.https.HttpsError('internal', 'Eroare la procesarea cererii de rezervare.');
       });
     }
+
+    else if (before.status !== after.status && after.status === "declined") {
+      return admin.database().ref(`/users/${after.userId}`).once('value').then(userSnapshot => {
+        const userData = userSnapshot.val();
+
+        const mailOptions = {
+          from: '"UPT Booking Hub" <uptbookinghub@gmail.com>',
+          to: userData.email,
+          subject: 'Rezervarea ta a fost respinsă',
+          text: `Bună ${userData.firstName} ${userData.lastName}, din păcate, rezervarea ta pentru evenimentul "${after.title}" în sala ${after.location} a fost respinsă. Motiv: ${after.declineReason || 'Nespecificat'}.`
+        };
+
+        return mailTransport.sendMail(mailOptions)
+          .then(() => console.log('Email de respingere trimis cu succes!'))
+          .catch((error) => console.error('Eroare la trimiterea emailului de respingere:', error));
+      });
+    }
+    
     return null;
   });

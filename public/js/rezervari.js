@@ -224,26 +224,71 @@ document.addEventListener("DOMContentLoaded", function () {
         declineModal.style.display = "none";
         document.getElementById("declineReason").value = "";
       } else {
-        alert("Vă rugăm să introduceți un motiv pentru refuzul rezervării.");
+        toastr.error("Există un conflict cu o altă rezervare acceptată. Nu se poate accepta această rezervare.", {
+          timeOut: 5000,
+        });
       }
     };
   }
 
   function updateBookingStatus(bookingId, status, reason = null) {
+
+    const bookingRef = ref(database, `rezervari/${bookingId}`);
+    get(bookingRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const bookingData = snapshot.val();
+        if (status === "acceptat") {
+          const conflictingBookingsRef = query(
+            ref(database, "rezervari"),
+            orderByChild('location'),
+            equalTo(bookingData.location)
+          );
+  
+          get(conflictingBookingsRef).then((conflictsSnapshot) => {
+            let conflictExists = false;
+            conflictsSnapshot.forEach((conflictSnapshot) => {
+              const conflictBooking = conflictSnapshot.val();
+              if (conflictBooking.bookingId !== bookingId && conflictBooking.status === 'acceptat' &&
+                  !(new Date(bookingData.end) <= new Date(conflictBooking.start) ||
+                    new Date(bookingData.start) >= new Date(conflictBooking.end))) {
+                conflictExists = true;
+              }
+            });
+  
+            if (conflictExists) {
+              toastr.error("Există un conflict cu o altă rezervare acceptată. Nu se poate accepta această rezervare.", {
+                timeOut: 5000,
+              });
+              return; 
+            } else {
+              proceedWithStatusUpdate(bookingRef, status, reason);
+            }
+          });
+        } else {
+          proceedWithStatusUpdate(bookingRef, status, reason);
+        }
+      } else {
+        console.error("Rezervarea nu a fost găsită.");
+      }
+    });
+  }
+  
+  function proceedWithStatusUpdate(bookingRef, status, reason) {
     const updateData = { status: status };
     if (reason && status === "declined") {
       updateData.declineReason = reason;
     }
-
-    update(ref(database, `rezervari/${bookingId}`), updateData)
+  
+    update(bookingRef, updateData)
       .then(() => {
         console.log("Status updated successfully:", status);
-        window.location.reload();
+        window.location.reload(); 
       })
       .catch((error) => {
         console.error("Error updating booking status:", error);
       });
   }
+  
 
   function deleteBooking(bookingId) {
     if (confirm("Ești sigur că vrei să ștergi această rezervare?")) {
