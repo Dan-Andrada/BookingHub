@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const filterSelectCalendar = document.getElementById(
     "filter-select-calendar"
   );
+  const roomSelect = document.getElementById("filter-room-select");
   const filterSelectForm = document.getElementById("filter-select-form");
   const overlay = document.getElementById("overlay");
   const exportCalendarButton = document.getElementById("exportCalendarButton");
@@ -114,6 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   updateDateTimeInputs();
   populateEventTypesSelect();
+  populateRoomSelect();
   populateFilterSelect(filterSelectCalendar);
   populateFilterSelect(filterSelectForm);
 
@@ -181,54 +183,82 @@ document.addEventListener("DOMContentLoaded", function () {
     },
   });
 
-  let currentFilter = "all";
-
   function loadEventsToCalendar() {
-    const bookingsRef = query(
-      ref(database, "rezervari"),
-      orderByChild("status"),
-      equalTo("acceptat")
-    );
-    //const bookingsRef = ref(database, "rezervari");
-    get(bookingsRef)
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          calendar.removeAllEvents();
-          const eventsToAdd = [];
-          snapshot.forEach((childSnapshot) => {
-            const event = childSnapshot.val();
+
+    let activeFilter = null;
+    let filterValue = null;
+
+    if (!filterSelectCalendar.disabled && filterSelectCalendar.value !== "all") {
+      activeFilter = "filterType";
+      filterValue = filterSelectCalendar.value;
+    } else if (!roomSelect.disabled && roomSelect.value !== "all") {
+      activeFilter = "location";
+      filterValue = roomSelect.value;
+    }
+
+    let queryRef = ref(database, "rezervari");
+    if (activeFilter && filterValue) {
+      queryRef = query(queryRef, orderByChild(activeFilter), equalTo(filterValue));
+    } else {
+      queryRef = query(queryRef, orderByChild("status"), equalTo("acceptat"));
+    }
+
+    get(queryRef).then(snapshot => {
+      calendar.removeAllEvents();
+      if (snapshot.exists()) {
+        snapshot.forEach(childSnapshot => {
+          const event = childSnapshot.val();
+          if (event.status === "acceptat" && (!activeFilter || event[activeFilter] === filterValue)) {
             let eventStart = new Date(event.start);
             let eventEnd = new Date(event.end);
+            calendar.addEvent(createEventObject(event, eventStart, eventEnd));
+          }
+        });
+      }
+      calendar.render();
+    }).catch(error => {
+      console.error("Error loading events:", error);
+    });
+}
 
-            if (currentFilter === "all" || event.filterType === currentFilter) {
-              if (event.recurrence && event.recurrence.type === "weekly") {
-                for (let i = 0; i < event.recurrence.count; i++) {
-                  eventsToAdd.push(
-                    createEventObject(
-                      event,
-                      new Date(eventStart),
-                      new Date(eventEnd)
-                    )
-                  );
-                  eventStart.setDate(eventStart.getDate() + 7);
-                  eventEnd.setDate(eventEnd.getDate() + 7);
-                }
-              } else {
-                eventsToAdd.push(
-                  createEventObject(event, eventStart, eventEnd)
-                );
-              }
-            }
-          });
-          calendar.removeAllEvents();
-          eventsToAdd.forEach((event) => calendar.addEvent(event));
-          calendar.render();
-        }
-      })
-      .catch((error) => {
-        console.error("Error loading events:", error);
-      });
+  filterSelectCalendar.addEventListener("change", function () {
+    if (this.value !== "all") {
+      roomSelect.disabled = true;
+    } else {
+      roomSelect.disabled = false;
+    }
+    loadEventsToCalendar();
+  });
+
+  roomSelect.addEventListener("change", function () {
+    if (this.value !== "all") {
+      filterSelectCalendar.disabled = true;
+    } else {
+      filterSelectCalendar.disabled = false;
+    }
+    loadEventsToCalendar();
+  });
+
+  function populateRoomSelect() {
+    
+    const roomsRef = ref(database, "sali"); 
+    get(roomsRef).then(snapshot => {
+      if (snapshot.exists()) {
+        snapshot.forEach(childSnapshot => {
+          const room = childSnapshot.val();
+          const option = document.createElement('option');
+          option.value = room.nume_sala; 
+          option.textContent = room.nume_sala;
+          roomSelect.appendChild(option);
+        });
+      } else {
+        console.log("No rooms found.");
+      }
+    }).catch(error => {
+      console.error("Error fetching rooms:", error);
+    });
   }
+  
 
   function createEventObject(event, start, end) {
     return {
@@ -267,12 +297,6 @@ document.addEventListener("DOMContentLoaded", function () {
   addEventButton.addEventListener("click", showAddEventPopup);
   overlay.addEventListener("click", closeAddEventPopup);
 
-  addEventForm.addEventListener("reset", closeAddEventPopup);
-  filterSelectCalendar.addEventListener("change", function () {
-    currentFilter = this.value;
-    loadEventsToCalendar();
-  });
-
   document.getElementById("addEventForm").addEventListener("submit", async function(event) {
     event.preventDefault(); 
   
@@ -290,10 +314,10 @@ document.addEventListener("DOMContentLoaded", function () {
         timeOut: 5000,
       });
     } else {
-      this.submit(); 
+      submitEventForm(event);
     }
-  });
-  
+});
+
 
   document
     .getElementById("recurrence")
@@ -374,7 +398,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("eventStartTime").value = suggestedStartTime;
     document.getElementById("eventEndDate").value = now
       .toISOString()
-      .split("T")[0]; // Același lucru pentru data de sfârșit
+      .split("T")[0];
     document.getElementById("eventEndTime").value = suggestedEndTime;
   }
 
@@ -468,7 +492,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (startISO < reservation.end && endISO > reservation.start) {
               console.log("Overlap found, room is not available");
               isAvailable = false;
-              return true; // Break the loop on finding an overlap
+              return true; 
             }
           });
         } else {
@@ -479,7 +503,7 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch((error) => {
         console.error("Failed to check room availability:", error);
-        return false; // Consider room unavailable on error
+        return false; 
       });
   }
   
@@ -541,8 +565,6 @@ document.addEventListener("DOMContentLoaded", function () {
       locationList.style.display = "block";
     });
   }
-  
-  
 
   document.addEventListener("click", function (event) {
     const locationList = document.getElementById("locationList");
@@ -656,9 +678,6 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Error retrieving user data:", error);
       });
   }
-
-
-  
 
   function showAddEventPopup() {
     updateDateTimeInputs();
