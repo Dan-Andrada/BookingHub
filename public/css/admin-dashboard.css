@@ -82,6 +82,17 @@ html {
   font-size: smaller;
 }
 
+.top-bar-left, .select-container, .user-profile {
+  display: flex;
+  align-items: center;
+}
+
+.select-container {
+  margin-left: auto; /* Așează selectoarea de limbă spre dreapta */
+  margin-right: 20px; /* Distanța între selectoarea de limbă și profil */
+}
+
+
 .profile-pic {
   border-radius: 50%;
   width: 40px;

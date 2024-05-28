@@ -54,9 +54,9 @@ exports.sendBookingRequestEmail = functions.database.ref('/rezervari/{bookingId}
 
       const mailOptions = {
         from: '"UPT Booking Hub" <uptbookinghub@gmail.com>',
-        to: 'maria.clipici@student.upt.ro',  
+        to: 'maria.clipici@student.upt.ro',
         subject: 'Nouă Cerere de Rezervare',
-        text: `Ai o nouă cerere de rezervare de la ${userData.firstName} ${userData.lastName}.`
+        text: `Ai o nouă cerere de rezervare de la ${userData.firstName} ${userData.lastName} pentru evenimentul "${reservation.title}" în sala ${reservation.location}.`
       };
 
       return mailTransport.sendMail(mailOptions)
@@ -67,6 +67,7 @@ exports.sendBookingRequestEmail = functions.database.ref('/rezervari/{bookingId}
       throw new functions.https.HttpsError('internal', 'Eroare la procesarea cererii de rezervare.');
     });
   });
+
 
 
   exports.sendBookingApprovalEmail = functions.database.ref('/rezervari/{bookingId}')
@@ -80,9 +81,9 @@ exports.sendBookingRequestEmail = functions.database.ref('/rezervari/{bookingId}
 
         const mailOptions = {
           from: '"UPT Booking Hub" <uptbookinghub@gmail.com>',
-          to: userData.email,  
+          to: userData.email,
           subject: 'Rezervarea ta a fost acceptată',
-          text: `Bună ${userData.firstName} ${userData.lastName}, rezervarea ta pentru ${after.location} a fost acceptată.`
+          text: `Bună ${userData.firstName} ${userData.lastName}, rezervarea ta pentru evenimentul "${after.title}" în sala ${after.location} a fost acceptată.`
         };
 
         return mailTransport.sendMail(mailOptions)
@@ -95,4 +96,3 @@ exports.sendBookingRequestEmail = functions.database.ref('/rezervari/{bookingId}
     }
     return null;
   });
-
