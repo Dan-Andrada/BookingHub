@@ -79,12 +79,37 @@ export function uploadProfileImage() {
   });
 }
 
-export function signOutUser() {
-  const logoutLink = document.getElementById("logout-link");
-  logoutLink.addEventListener("click", event => {
-    event.preventDefault();
-    signOut(auth).then(() => {
-      window.location.replace("/index.html");
+export function signOutUser(selector) {
+  const logoutElement = document.querySelector(selector);
+  if (logoutElement) {
+    logoutElement.addEventListener("click", event => {
+      event.preventDefault();
+      signOut(auth).then(() => {
+        window.location.replace("/index.html");
+      }).catch(error => {
+        console.error("Failed to sign out:", error);
+        alert("Logout failed. Please try again.");
+      });
     });
-  });
+  } else {
+    console.error("Logout element not found for selector:", selector);
+  }
 }
+
+export function setupDropdown() {
+  const dropdownArrow = document.querySelector('.dropdown-arrow');
+  const userMenu = document.querySelector('.user-menu');
+
+  if (dropdownArrow) {
+    dropdownArrow.addEventListener('click', () => {
+      userMenu.style.display = userMenu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    window.addEventListener('click', function(event) {
+      if (!event.target.matches('.dropdown-arrow') && !event.target.matches('.user-name') && !event.target.closest('.user-menu')) {
+        userMenu.style.display = 'none';
+      }
+    });
+  }
+}
+

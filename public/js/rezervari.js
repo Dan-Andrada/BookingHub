@@ -51,7 +51,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function loadBookings(userId) {
 
-    
     const bookingsRef = query(
       ref(database, "rezervari"),
       orderByChild("userId"),
@@ -126,7 +125,6 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error('Failed to retrieve upcoming events:', error);
     });
 }
-
 
   closeBtn.onclick = function () {
     declineModal.style.display = "none";
@@ -291,20 +289,38 @@ document.addEventListener("DOMContentLoaded", function () {
   
 
   function deleteBooking(bookingId) {
-    if (confirm("Ești sigur că vrei să ștergi această rezervare?")) {
-      const bookingRef = ref(database, `rezervari/${bookingId}`);
-      remove(bookingRef)
-        .then(() => {
-          console.log("Rezervare ștearsă cu succes!");
-
-          window.location.reload();
-        })
-        .catch((error) => {
-          console.error("Eroare la ștergerea rezervării: ", error);
-        });
-    }
+    Swal.fire({
+      title: 'Ești sigur?',
+      text: "Nu vei putea reveni asupra acestei acțiuni!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: "#007BFF",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Da, șterge!",
+      cancelButtonText: "Anulează!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const bookingRef = ref(database, `rezervari/${bookingId}`);
+        remove(bookingRef)
+          .then(() => {
+            Swal.fire(
+              'Șters!',
+              'Rezervarea a fost ștearsă.',
+              'success'
+            );
+            window.location.reload(); 
+          })
+          .catch((error) => {
+            Swal.fire(
+              'Eroare!',
+              'Rezervarea nu a putut fi ștearsă: ' + error.message,
+              'error'
+            );
+          });
+      }
+    })
   }
-
+  
   deleteButtons.forEach((button) => {
     button.addEventListener("click", function () {
       const bookingId = this.getAttribute("data-booking-id");

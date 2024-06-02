@@ -18,59 +18,46 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       const form = document.getElementById("addSalaForm");
 
-      form.addEventListener("submit", (e) => {
+      form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const numeSala = document.getElementById("nume_sala").value;
-        const capacitate = document.getElementById("capacitate").value;
-        const echipamente = document.getElementById("echipamente").value;
-        const descriere = document.getElementById("descriere").value;
+        const numeSala = document.getElementById("nume_sala").value.trim();
+        const capacitate = document.getElementById("capacitate").value.trim();
+        const echipamente = document.getElementById("echipamente").value.trim();
+        const descriere = document.getElementById("descriere").value.trim();
 
-        const saliRef = ref(database, "sali");
+        if (!numeSala || !capacitate || !echipamente || !descriere) {
+          toastr.error("Toate câmpurile sunt obligatorii!", { timeOut: 3000 });
+          return;
+        }
 
-        const salaId = Date.now().toString();
+        const capacitateNum = parseInt(capacitate, 10);
+        if (isNaN(capacitateNum) || capacitateNum <= 0) {
+          toastr.error("Capacitatea trebuie să fie un număr valid mai mare decât 0!", { timeOut: 3000 });
+          return;
+        }
 
-        get(ref(database, "/sali"))
-          .then((snapshot) => {
-            let existingRoom = false;
+        try {
+          const saliSnapshot = await get(ref(database, "/sali"));
+          const sali = saliSnapshot.val() || {};
+          const salaExists = Object.values(sali).some(sala => sala.nume_sala === numeSala);
 
-            const sali = snapshot.val();
-            for (let id in sali) {
-              if (sali[id].nume_sala === numeSala) {
-                existingRoom = true;
-                break;
-              }
-            }
-
-            if (existingRoom) {
-              toastr.info("Numele sălii există deja!", {
-                timeOut: 5000,
-              });
-            } else {
-              const newSalaRef = ref(database, "sali/" + salaId);
-              set(newSalaRef, {
-                nume_sala: numeSala,
-                capacitate: parseInt(capacitate, 10),
-                echipamente: echipamente,
-                descriere: descriere,
-              })
-                .then(() => {
-                  toastr.success("Sala a fost adăugată cu succes!", {
-                    timeOut: 5000,
-                  });
-                  form.reset();
-                })
-                .catch((error) => {
-                  console.error("Eroare la adăugarea sălii: ", error);
-                });
-            }
-          })
-          .catch((error) => {
-            console.error(
-              "Eroare la verificarea existenței numelui sălii: ",
-              error
-            );
-          });
+          if (salaExists) {
+            toastr.info("Numele sălii există deja!", { timeOut: 5000 });
+          } else {
+            await set(ref(database, `sali/${Date.now()}`), {
+              nume_sala: numeSala,
+              capacitate: capacitateNum,
+              echipamente: echipamente,
+              descriere: descriere,
+            });
+            toastr.success("Sala a fost adăugată cu succes!", { timeOut: 5000 });
+            form.reset();
+          }
+        } catch (error) {
+          console.error("Eroare la adăugarea sau verificarea sălii: ", error);
+          toastr.error("Eroare la procesarea cererii.", { timeOut: 3000 });
+        }
       });
     }
   });
