@@ -17,12 +17,15 @@ import {
   initializeUserProfile,
   uploadProfileImage,
   signOutUser,
+  setupDropdown
 } from "./userDetails.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   initializeUserProfile();
   uploadProfileImage();
-  signOutUser();
+  setupDropdown();
+  signOutUser("#logout");
+  signOutUser("#logout-link");
 
   function getUserDetails() {
     return new Promise((resolve, reject) => {

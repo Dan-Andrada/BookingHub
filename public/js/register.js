@@ -92,7 +92,7 @@ function handleStudentRole(email, password, firstName, lastName) {
   const studyYear = document.getElementById("study-year").value;
 
   if (!studentNumber || !studyYear || studyYear < 1 || studyYear > 4) {
-    toastr.info("Please enter a valid student number and study year (1-4).", {
+    toastr.info("Introduceți un an de studiu și un număr matricol!", {
       timeOut: 3000,
     });
     return;
@@ -134,19 +134,19 @@ function verifyMatriculationNumberAndProceed(
   get(matriculationNumbersRef)
     .then((snapshot) => {
       if (snapshot.exists()) {
-        onFailure("The matriculation number is already registered.");
+        onFailure("Numărul matricol este deja înregistrat.");
       } else {
         set(ref(database, "matriculationNumbers/" + studentNumber), true)
           .then(() => onSuccess())
           .catch((error) => {
-            console.error("Failed to set matriculation number:", error);
-            onFailure("Failed to register the matriculation number.");
+            console.error("Eroare la numărul matricol:", error);
+            onFailure("Eroare la înregistrarea numărului matricol.");
           });
       }
     })
     .catch((error) => {
-      console.error("Failed to verify matriculation number:", error);
-      onFailure("An error occurred while verifying the matriculation number.");
+      console.error("Eroare la verificarea numărului matricol:", error);
+      onFailure("A intervenit o eroare la verificarea numărului matricol.");
     });
 }
 
@@ -154,7 +154,7 @@ function handleAdministratorRole(email, password, firstName, lastName) {
   const adminPhone = document.getElementById("admin-phone").value;
 
   if (!adminPhone) {
-    toastr.info("Please enter a phone number for the administrator.", {
+    toastr.info("Introduceți un număr de telefon pentru administrator.", {
       timeOut: 3000,
     });
     return;
@@ -178,7 +178,7 @@ function handleProfesorRole(email, password, firstName, lastName) {
   const profDepartament = document.getElementById("prof-departament").value;
 
   if (!profDepartament) {
-    toastr.info("Please select a department for the professor.", {
+    toastr.info("Alegeți un departament.", {
       timeOut: 3000,
     });
     return;
@@ -204,7 +204,7 @@ function handleSecretarRole(email, password, firstName, lastName) {
   ).value;
 
   if (!secretarDepartament) {
-    toastr.info("Please select a department for the secretary.", {
+    toastr.info("Alegeți un departament.", {
       timeOut: 3000,
     });
     return;
@@ -235,7 +235,7 @@ function createUserAndSaveData(
   createUser({ email, password, firstName, lastName, role })
     .then((result) => {
       if (!result.data.uid) {
-        throw new Error("UID is undefined after creating user.");
+        throw new Error("UID nu este definit după crearea userului.");
       }
       const uid = result.data.uid;
 
@@ -264,26 +264,25 @@ function createUserAndSaveData(
               throw new Error("Invalid role");
           }
           if (path) {
-            // Save the role-specific information in the designated path
             return set(ref(database, path), roleSpecificInfo);
           }
         })
         .then(() => {
-          toastr.success("User created successfully!", {
+          toastr.success("Utilizatorul a fost creat cu succes!", {
             timeOut: 3000,
           });
           registerForm.reset();
         })
         .catch((error) => {
-          console.error("Error saving user data:", error);
-          toastr.error("Failed to create account. " + error.message, {
+          console.error("Eroare la salvarea datelor:", error);
+          toastr.error("Eroare la crearea contului. " + error.message, {
             timeOut: 3000,
           });
         });
     })
     .catch((error) => {
-      console.error("Error creating user:", error);
-      toastr.error("Failed to create account. " + error.message, {
+      console.error("Eroare la crearea utilizatorului:", error);
+      toastr.error("Eroare la crearea contului. " + error.message, {
         timeOut: 3000,
       });
     });
@@ -298,6 +297,13 @@ registerButton.addEventListener("click", function (event) {
   const lastName = document.getElementById("last-name").value;
   const role = roleSelect.value;
 
+  if (password.length < 6) {  
+    toastr.error("Parola trebuie să aibă cel puțin 6 caractere.", {
+      timeOut: 3000,
+    });
+    return;
+  }
+
   if (lastName === "" || firstName === "") {
     toastr.info("Numele și prenumele sunt obligatorii!", {
       timeOut: 3000,
@@ -305,15 +311,13 @@ registerButton.addEventListener("click", function (event) {
     return false;
   }
 
-  // Validate email
   if (!validateEmail(email)) {
-    toastr.info("Please enter a valid UPT email address.", {
+    toastr.info("Introduceți o adresă de email validă pentru UPT.", {
       timeOut: 3000,
     });
     return;
   }
 
-  // Handle registration based on role
   switch (role) {
     case "student":
       handleStudentRole(email, password, firstName, lastName);
@@ -328,7 +332,7 @@ registerButton.addEventListener("click", function (event) {
       handleSecretarRole(email, password, firstName, lastName);
       break;
     default:
-      toastr.info("Please select a role.", {
+      toastr.info("Selectează un rol.", {
         timeOut: 3000,
       });
   }
