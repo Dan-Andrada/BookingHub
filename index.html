@@ -24,10 +24,13 @@
                 <input type="email" id="email" name="email" autocomplete="email" required>
             </div>
             <div class="form-group">
-                <label for="password">Parola</label>
+                <label for="password">Parolă</label>
                 <input type="password" id="password" name="password" autocomplete="new-password" required>
             </div>
-            <button type="button" class="login-button">Intră în cont</button>
+            <button type="button" id="login-button" class="login-button">Autentificare</button>
+            <div class="separator">SAU</div>
+            <button id="vezi-ca-utilizator" class="visitor-button">Conectați-vă ca vizitator</button>
+
             <a href="#" class="forgot-password">Ai uitat parola?</a>
 
             <div id="password-reset-modal" class="modal">
@@ -50,6 +53,5 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/node_modules/jquery/dist/jquery.min.js"></script>
 <script src="/node_modules/toastr/build/toastr.min.js"></script>
-
 </body>        
 </html>

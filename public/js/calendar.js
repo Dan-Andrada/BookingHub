@@ -297,6 +297,15 @@ document.addEventListener("DOMContentLoaded", function () {
   addEventButton.addEventListener("click", showAddEventPopup);
   overlay.addEventListener("click", closeAddEventPopup);
 
+  auth.onAuthStateChanged(function(user) {
+    if (user) {
+      addEventButton.style.display = "block";
+      addEventButton.addEventListener("click", showAddEventPopup);
+    } else {
+      addEventButton.style.display = "none";
+    }
+  });
+
   document.getElementById("addEventForm").addEventListener("submit", async function(event) {
     event.preventDefault(); 
   

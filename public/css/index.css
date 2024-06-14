@@ -1,4 +1,3 @@
-/*login.html */
 body {
   font-family: Arial, sans-serif;
   background: #f4f4f4;
@@ -27,18 +26,10 @@ body {
   height: auto; 
 }
 
-.login-title {
+.login-subtitle {
   color: #333;
   text-align: center;
-}
-
-.title-highlight {
-  color: #2e3192;
-}
-
-.login-subtitle {
-  text-align: center;
-  color: #666;
+  margin-bottom: 1em;
 }
 
 .form-group {
@@ -57,18 +48,46 @@ body {
   border-radius: 5px;
 }
 
-.login-button {
-  width: 100%;
+button {
+  width: 80%;
   padding: 1em;
   border: none;
-  background-color: #2e3192;
-  color: white;
-  border-radius: 5px;
+  border-radius: 30px;
+  margin-top: 10px;
   cursor: pointer;
+  font-size: 1em;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.login-button {
+  background-color: #8a93b7;
+  color: white;
+}
+
+.login-button.active {
+  background-color: #2e3192;
 }
 
 .login-button:hover {
+  background-color: #6c75a3;
+}
+
+.visitor-button {
   background-color: #2e3192;
+  color: white;
+}
+
+.visitor-button:hover {
+  background-color: #3a3eb8;
+}
+
+.separator {
+  margin: 20px 0;
+  font-size: 1em;
+  color: #666;
+  text-align: center;
 }
 
 .forgot-password {
@@ -77,6 +96,10 @@ body {
   margin-top: 1em;
   color: #2e3192;
   text-decoration: none;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
 }
 
 .footer {
