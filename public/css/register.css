@@ -10,15 +10,24 @@ body {
 }
 
 .register-container {
+  width: 90%;
   max-width: 500px;
   margin: 0 auto;
   padding: 2rem;
   background: #f9f9f9;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px; /* Colțuri rotunjite */
+  box-sizing: border-box; /* Asigură-te că padding-ul este inclus în dimensiuni */
 }
 
 .register-form {
   margin: 2rem 0;
+}
+
+h2.register-subtitle {
+  color: #333;
+  text-align: center;
+  margin-bottom: 2rem; /* Ajustare a spațiului de jos */
 }
 
 .form-group {
@@ -28,17 +37,22 @@ body {
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
+  color: #555; /* Adăugat pentru a diferenția culoarea textului */
 }
 
 .form-group input[type="text"],
 .form-group input[type="email"],
 .form-group input[type="password"],
 .form-group input[type="tel"],
-.form-group select {
+.form-group select,
+.form-group input[type="number"] {
   width: 100%;
-  padding: 0.5rem;
+  padding: 0.75rem; /* Ajustare a padding-ului pentru o experiență mai bună */
   border: 1px solid #ccc;
   border-radius: 0.25rem;
+  box-sizing: border-box; /* Asigură-te că padding-ul și marginile sunt incluse în dimensiuni */
+  font-size: 1rem; /* Dimensiunea fontului mărită pentru accesibilitate */
+  background-color: #fff; /* Fundal alb pentru consistență */
 }
 
 button#register-button {
@@ -50,8 +64,70 @@ button#register-button {
   border-radius: 0.25rem;
   cursor: pointer;
   font-size: 1rem;
+  margin-top: 1rem; /* Adăugat pentru spațiu între buton și restul formularului */
 }
 
 button#register-button:hover {
   background-color: #003d82;
+}
+
+textarea {
+  width: 100%;
+  padding: 0.75rem; /* Ajustare a padding-ului pentru consistență */
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  box-sizing: border-box;
+  font-size: 1rem;
+  background-color: #fff;
+  resize: vertical; /* Permite redimensionarea pe verticală */
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px; /* Colțuri rotunjite pentru modal */
+  border-radius: 10px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .register-container {
+    padding: 1rem;
+  }
+  
+  button#register-button {
+    padding: 0.75rem;
+  }
+
+  .modal-content {
+    width: 90%;
+  }
 }

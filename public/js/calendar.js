@@ -205,21 +205,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
     get(queryRef).then(snapshot => {
       calendar.removeAllEvents();
+      let eventsToAdd = [];
       if (snapshot.exists()) {
         snapshot.forEach(childSnapshot => {
           const event = childSnapshot.val();
           if (event.status === "acceptat" && (!activeFilter || event[activeFilter] === filterValue)) {
             let eventStart = new Date(event.start);
             let eventEnd = new Date(event.end);
-            calendar.addEvent(createEventObject(event, eventStart, eventEnd));
+            if (event.recurrence && event.recurrence.type === "weekly") {
+              for (let i = 0; i < event.recurrence.count; i++) {
+                eventsToAdd.push(
+                  createEventObject(
+                    event,
+                    new Date(eventStart),
+                    new Date(eventEnd)
+                  )
+                );
+                eventStart.setDate(eventStart.getDate() + 7);
+                eventEnd.setDate(eventEnd.getDate() + 7);
+              }
+            } else {
+              eventsToAdd.push(
+                createEventObject(event, eventStart, eventEnd)
+              );
+            }
           }
         });
       }
+      calendar.removeAllEvents();
+      eventsToAdd.forEach((event) => calendar.addEvent(event));
       calendar.render();
     }).catch(error => {
       console.error("Error loading events:", error);
     });
-}
+  }
 
   filterSelectCalendar.addEventListener("change", function () {
     if (this.value !== "all") {
