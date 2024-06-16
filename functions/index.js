@@ -2,21 +2,6 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 
-const nodemailer = require('nodemailer');
-
-const mailTransport = nodemailer.createTransport({
-  service: 'gmail',
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: 'uptbookinghub@gmail.com',  
-    pass: 'ggmb gope jyhq bkgv'         
-  },
-  logger: true, 
-  debug: true 
-});
-
 exports.createUser = functions.https.onCall(async (data, context) => {
 
   if (!context.auth ) {
@@ -28,8 +13,7 @@ exports.createUser = functions.https.onCall(async (data, context) => {
       email: data.email,
       password: data.password,
     });
-
-    
+ 
     await admin.database().ref(`users/${userRecord.uid}`).set({
       firstName: data.firstName,
       lastName: data.lastName,
@@ -43,6 +27,21 @@ exports.createUser = functions.https.onCall(async (data, context) => {
     console.error("Error creating new user:", error);
     throw new functions.https.HttpsError("internal", "Unable to create new user.");
   }
+});
+
+const nodemailer = require('nodemailer');
+
+const mailTransport = nodemailer.createTransport({
+  service: 'gmail',
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: 'uptbookinghub@gmail.com',  
+    pass: 'ggmb gope jyhq bkgv'         
+  },
+  logger: true, 
+  debug: true 
 });
 
 exports.sendBookingRequestEmail = functions.database.ref('/rezervari/{bookingId}')
