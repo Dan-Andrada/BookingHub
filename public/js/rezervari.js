@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 bookingElement.innerHTML = `
                         <div class="request-info">
-                            Cerere de la: ${userName} pentru ${booking.location}
+                            Cerere de la: <a href="profile.html?userId=${booking.userId}">${userName}</a> pentru ${booking.location}
                             în data de ${formattedDate}, de la ${startTime} până la ${endTime}.
                             <br>Titlu: ${booking.title}
                             <br>Tip: ${booking.eventType}, destinat ${

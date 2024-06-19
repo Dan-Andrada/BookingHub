@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPT Booking Hub</title>
+    <link rel="stylesheet" href="./css/feedback.css" />
+    <link href="/node_modules/toastr/build/toastr.min.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div class="feedback-container">
+        <h1>Feedback</h1>
+        <form id="feedback-form">
+          <input type="hidden" id="bookingId" value="">
+          <div class="form-group">
+            <label for="rating">Rating:</label>
+            <select id="rating" required>
+              <option value="">Selectează un rating</option>
+              <option value="1">1 - Foarte slab</option>
+              <option value="2">2 - Slab</option>
+              <option value="3">3 - Mediu</option>
+              <option value="4">4 - Bun</option>
+              <option value="5">5 - Excelent</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="comments">Comentarii:</label>
+            <textarea id="comments" placeholder="Scrie comentariul tău aici..." required></textarea>
+          </div>
+          <button type="submit">Trimite feedback</button>
+        </form>
+      </div>
+
+      <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+      <script src="/node_modules/toastr/build/toastr.min.js"></script>
+    <script type="module" src="./js/feedback.js"></script>
+</body>
+</html>

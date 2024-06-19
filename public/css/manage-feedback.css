@@ -1,0 +1,94 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f5;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+h1, h2 {
+  text-align: center;
+  color: #444;
+  margin-top: 0;
+}
+
+.feedback-table-container {
+  max-height: 400px; /* Setează înălțimea maximă a tabelului */
+  overflow-y: auto; /* Permite derularea pe axa Y */
+  margin-bottom: 20px;
+}
+
+.feedback-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 16px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.feedback-table th, .feedback-table td {
+  border: 1px solid #ddd;
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.feedback-table th {
+  background-color: #f8f8f8;
+  font-weight: bold;
+}
+
+.feedback-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.feedback-table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+.summary {
+  text-align: center;
+  margin: 20px 0;
+  padding: 10px;
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.summary h2 {
+  margin-top: 0;
+}
+
+.summary p {
+  font-size: 1.2em;
+  color: #555;
+}
+
+.chart-container {
+  margin: 20px 0;
+  padding: 20px;
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.chart-container h2 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.chart-container canvas {
+  display: block;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
