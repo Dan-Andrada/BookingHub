@@ -100,24 +100,65 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function loadUpcomingEvents() {
-    const now = new Date().toISOString();
-    const upcomingRef = query(ref(database, "rezervari"), orderByChild("start"), startAt(now));
+    const now = new Date();
+    const upcomingRef = query(ref(database, "rezervari"), orderByChild("start"));
 
     get(upcomingRef).then((snapshot) => {
         if (snapshot.exists()) {
             const upcomingEventsList = document.getElementById('upcomingEvents');
-            upcomingEventsList.innerHTML = ''; // Clear existing entries
+            upcomingEventsList.innerHTML = ''; 
+            const eventsToShow = [];
+
             snapshot.forEach((childSnapshot) => {
                 const booking = childSnapshot.val();
                 if (booking.status === "acceptat") {
-                    const startTime = formatTime(booking.start);
-                    const endTime = formatTime(booking.end);
-                    const date = formatDate(booking.start);
-                    const bookingElement = document.createElement('li');
-                    bookingElement.textContent = `${booking.title} la ${booking.location} pe ${date}, de la ${startTime} până la ${endTime}`;
-                    upcomingEventsList.appendChild(bookingElement);
+                    if (booking.recurrence && booking.recurrence.type === 'weekly') {
+                        const interval = booking.recurrence.interval || 1;
+                        const recurrenceCount = booking.recurrence.count || 1;
+                        let instanceStart = new Date(booking.start);
+                        let instanceEnd = new Date(booking.end);
+
+                        for (let i = 0; i < recurrenceCount; i++) {
+                            if (instanceStart >= now) {
+                                const eventDetails = {
+                                    title: booking.title,
+                                    location: booking.location,
+                                    start: instanceStart.toISOString(),
+                                    end: instanceEnd.toISOString()
+                                };
+                                eventsToShow.push(eventDetails);
+                            }
+
+                            instanceStart.setDate(instanceStart.getDate() + 7 * interval);
+                            instanceEnd.setDate(instanceEnd.getDate() + 7 * interval);
+                        }
+                    } else {
+                        if (new Date(booking.start) >= now) {
+                            const eventDetails = {
+                                title: booking.title,
+                                location: booking.location,
+                                start: booking.start,
+                                end: booking.end
+                            };
+                            eventsToShow.push(eventDetails);
+                        }
+                    }
                 }
             });
+
+            if (eventsToShow.length > 0) {
+                eventsToShow.forEach(event => {
+                    const startTime = formatTime(event.start);
+                    const endTime = formatTime(event.end);
+                    const date = formatDate(event.start);
+                    const bookingElement = document.createElement('li');
+                    bookingElement.textContent = `${event.title} la ${event.location} pe ${date}, de la ${startTime} până la ${endTime}`;
+                    upcomingEventsList.appendChild(bookingElement);
+                });
+            } else {
+                upcomingEventsList.innerHTML = '<li>No upcoming events found.</li>';
+            }
+
         } else {
             document.getElementById('upcomingEvents').innerHTML = '<li>No upcoming events found.</li>';
         }
@@ -200,16 +241,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 pendingList.appendChild(bookingElement);
               })
               .catch((error) => {
-                console.error("Failed to retrieve user details:", error);
+                console.error("Eroare la încărcarea detaliilor utilizatorului:", error);
               });
           });
         } else {
           pendingList.innerHTML = "<li>Nu există cereri în așteptare.</li>";
-          console.log("No pending bookings found");
+          console.log("Nu există cereri în așteptare.");
         }
       })
       .catch((error) => {
-        console.error("Failed to retrieve pending bookings:", error);
+        console.error("Eroare la încărcarea cererilor de rezervare:", error);
       });
   }
 

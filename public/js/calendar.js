@@ -491,49 +491,75 @@ document.addEventListener("DOMContentLoaded", function () {
       const inputText = e.target.value.toLowerCase();
       updateLocationSuggestions(inputText);
     });
+    
+    function toLocalISOString(date) {
+      const offset = date.getTimezoneOffset() * 60000;
+      const localISOTime = new Date(date.getTime() - offset).toISOString();
+      return localISOTime;
+    }
 
-  function toLocalISOString(date) {
-    const offset = date.getTimezoneOffset() * 60000;
-    const localISOTime = new Date(date.getTime() - offset).toISOString();
-    return localISOTime;
-  }
-
-  function checkRoomAvailability(roomId, localStartDate, localEndDate) {
-    const startISO = toLocalISOString(localStartDate);
-    const endISO = toLocalISOString(localEndDate);
+    function checkRoomAvailability(roomId, localStartDate, localEndDate) {
+      const startISO = toLocalISOString(localStartDate);
+      const endISO = toLocalISOString(localEndDate);
+    
+      console.log(`Checking availability for ${roomId} between ${startISO} and ${endISO}`);
+    
+      const bookingsRef = query(
+        ref(database, "rezervari"),
+        orderByChild("location"),
+        equalTo(roomId)
+      );
+    
+      return get(bookingsRef)
+        .then((snapshot) => {
+          let isAvailable = true;
+          if (snapshot.exists()) {
+            snapshot.forEach((reservationSnapshot) => {
+              const reservation = reservationSnapshot.val();
+              console.log(`Comparing with booking from ${reservation.start} to ${reservation.end}`);
   
-    console.log(`Checking availability for ${roomId} between ${startISO} and ${endISO}`);
+              if (reservation.recurrence && reservation.recurrence.type === 'weekly') {
+                const interval = reservation.recurrence.interval || 1;
+                const recurrenceCount = reservation.recurrence.count || 1;
+                let instanceStart = new Date(reservation.start);
+                let instanceEnd = new Date(reservation.end);
   
-    const bookingsRef = query(
-      ref(database, "rezervari"),
-      orderByChild("location"),
-      equalTo(roomId)
-    );
+                for (let i = 0; i < recurrenceCount; i++) {
+                  console.log(`Checking overlap for recurring booking from ${instanceStart.toISOString()} to ${instanceEnd.toISOString()}`);
+                  if (checkOverlap(startISO, endISO, instanceStart.toISOString(), instanceEnd.toISOString())) {
+                    console.log("Overlap found with recurring booking, room is not available");
+                    isAvailable = false;
+                    return true;
+                  }
   
-    return get(bookingsRef)
-      .then((snapshot) => {
-        let isAvailable = true;
-        if (snapshot.exists()) {
-          snapshot.forEach((reservationSnapshot) => {
-            const reservation = reservationSnapshot.val();
-            console.log(`Comparing with booking from ${reservation.start} to ${reservation.end}`);
-            if (startISO < reservation.end && endISO > reservation.start) {
-              console.log("Overlap found, room is not available");
-              isAvailable = false;
-              return true; 
-            }
-          });
-        } else {
-          console.log("No bookings found for this room.");
-        }
-        console.log(`Room ${roomId} availability: ${isAvailable}`);
-        return isAvailable;
-      })
-      .catch((error) => {
-        console.error("Failed to check room availability:", error);
-        return false; 
-      });
-  }
+                  instanceStart.setDate(instanceStart.getDate() + 7 * interval);
+                  instanceEnd.setDate(instanceEnd.getDate() + 7 * interval);
+                }
+              } else {
+                console.log(`Checking overlap for single booking from ${reservation.start} to ${reservation.end}`);
+                if (checkOverlap(startISO, endISO, reservation.start, reservation.end)) {
+                  console.log("Overlap found with single booking, room is not available");
+                  isAvailable = false;
+                  return true;
+                }
+              }
+            });
+          } else {
+            console.log("No bookings found for this room.");
+          }
+          console.log(`Room ${roomId} availability: ${isAvailable}`);
+          return isAvailable;
+        })
+        .catch((error) => {
+          console.error("Failed to check room availability:", error);
+          return false; 
+        });
+    }
+    
+    function checkOverlap(startISO, endISO, reservationStart, reservationEnd) {
+      console.log(`Comparing with booking from ${reservationStart} to ${reservationEnd}`);
+      return (startISO < reservationEnd && endISO > reservationStart);
+    }
   
 
   function updateLocationSuggestions(inputText) {
