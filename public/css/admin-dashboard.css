@@ -88,8 +88,8 @@ html {
 }
 
 .select-container {
-  margin-left: auto; /* Așează selectoarea de limbă spre dreapta */
-  margin-right: 20px; /* Distanța între selectoarea de limbă și profil */
+  margin-left: auto; 
+  margin-right: 20px; 
 }
 
 
@@ -151,14 +151,14 @@ html {
 
 .main-content {
   display: flex;
-  flex-wrap: wrap; /* În caz că elementele nu încap pe un singur rând */
-  gap: 20px; /* Spațiu între carduri */
-  justify-content: center; /* Aliniază cardurile în centru */
+  flex-wrap: wrap; 
+  gap: 20px;
+  justify-content: center; 
 }
 
 .user-card-container, .links-card-container {
-  flex: 1; /* Flexibil, dar să ia egal spațiu */
-  min-width: 300px; /* Minim o lățime pentru a fi vizibil */
+  flex: 1; 
+  min-width: 300px; 
   padding: 20px;
   margin-top: 45px;
   margin-bottom: 600px;
@@ -214,19 +214,19 @@ html {
 }
 
 .dropdown-arrow {
-  font-size: 18px; /* Mărește sau micșorează după preferințe */
+  font-size: 18px; 
   cursor: pointer;
 }
 
 .user-menu {
   position: absolute;
-  top: 100%; /* Ajustează astfel încât să apară sub bara de utilizator */
+  top: 100%; 
   right: 0;
   background-color: #ffffff;
   box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-  border-radius: 5px; /* Adaugă borduri rotunjite */
+  border-radius: 5px;
   overflow: hidden;
-  display: none; /* Ascuns implicit */
+  display: none; 
 }
 
 .user-menu a {
@@ -238,5 +238,5 @@ html {
 }
 
 .user-menu a:hover {
-  background-color: #f0f0f0; /* Schimbă culoarea la hover */
+  background-color: #f0f0f0; 
 }

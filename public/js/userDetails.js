@@ -1,4 +1,3 @@
-// userProfile.js
 import { update, updateProfile, auth, database, ref, get, signOut, storage, storageRef, uploadBytes, getDownloadURL } from './firebaseConfig.js';
 
 export function initializeUserProfile() {

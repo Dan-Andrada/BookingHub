@@ -3,7 +3,7 @@ import { auth, database, ref, get, storage, storageRef, uploadBytes, getDownload
 document.addEventListener('DOMContentLoaded', function() {
   const userCardContainer = document.getElementById("userCardContainer");
 
-  // Preia userId din URL
+  // o sa preia userId din URL
   function getUserIdFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('userId');

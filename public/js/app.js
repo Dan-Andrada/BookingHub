@@ -37,7 +37,6 @@ let attemptsInfo = {
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 
-// Activează butonul de autentificare dacă câmpurile email și parolă sunt completate
 function toggleLoginButton() {
   if (emailInput.value && passwordInput.value) {
     loginButton.classList.add("active");
@@ -54,10 +53,10 @@ loginButton.addEventListener("click", function () {
   const password = passwordInput.value;
   const currentTime = new Date().getTime();
 
-  const emailPattern = /.+upt\.ro$/; // Regex pentru a verifica dacă emailul se termină cu @upt.ro
+  const emailPattern = /.+upt\.ro$/; // rgex pentru a verifica dacă emailul se termină cu @upt.ro
 
   if (email !== attemptsInfo.email) {
-    // Resetare încercări și timp de blocare dacă emailul s-a schimbat
+  
     attemptsInfo.email = email;
     attemptsInfo.attempts = 0;
     attemptsInfo.lockoutTime = 0;

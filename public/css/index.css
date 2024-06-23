@@ -63,7 +63,7 @@ button {
 .login-button {
   background-color: #8a93b7;
   color: white;
-  margin-bottom: 5px; /* Ajustează marginea de jos pentru butonul de autentificare */
+  margin-bottom: 5px; 
 }
 
 .login-button.active {
@@ -77,7 +77,7 @@ button {
 .visitor-button {
   background-color: #2e3192;
   color: white;
-  margin-top: 5px; /* Ajustează marginea de sus pentru butonul de vizitator */
+  margin-top: 5px;
 }
 
 .visitor-button:hover {
