@@ -24,6 +24,7 @@ UPT Booking Hub este o aplicație web pentru gestionarea rezervărilor sălilor 
 
 2. **Instalarea dependințelor:**
 
+   ```bash
     npm install
 
 3. **Configurarea Firebase:**
@@ -32,6 +33,7 @@ UPT Booking Hub este o aplicație web pentru gestionarea rezervărilor sălilor 
 
 4. **Rulare:**
 
+   ```bash
     npm start
 
    Aplicația va fi disponibilă la „http://127.0.0.1:5501/”.
