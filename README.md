@@ -35,5 +35,5 @@ UPT Booking Hub este o aplicație web pentru gestionarea rezervărilor sălilor 
 
    ```bash
     npm start      
-
+*
    Aplicația va fi disponibilă la (http://127.0.0.1:5501/).
