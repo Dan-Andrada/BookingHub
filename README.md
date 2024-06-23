@@ -37,13 +37,3 @@ UPT Booking Hub este o aplicație web pentru gestionarea rezervărilor sălilor 
     npm start      
 *
    Aplicația va fi disponibilă la (http://127.0.0.1:5501/).
-
-   ## Dependențe
-
-- `@fullcalendar/core`: Biblioteca principală FullCalendar pentru afișarea calendarului.
-- `@fullcalendar/daygrid`: Plugin FullCalendar pentru vizualizarea calendarului în mod grilă zilnică.
-- `@fullcalendar/list`: Plugin FullCalendar pentru vizualizarea evenimentelor în mod listă.
-- `@fullcalendar/timegrid`: Plugin FullCalendar pentru vizualizarea calendarului în mod grilă de timp.
-- `ionicons`: Set de iconițe pentru utilizarea în interfața utilizatorului.
-- `moment`: Biblioteca de manipulare a datelor și timpului.
-- `toastr`: Bibliotecă pentru afișarea notificărilor toast.
