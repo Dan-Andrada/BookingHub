@@ -30,4 +30,8 @@ UPT Booking Hub este o aplicație web pentru gestionarea rezervărilor sălilor 
 
     Configurează Firebase utilizând [Using Firebase CLI](https://firebase.google.com/docs/web/setup).
 
-    
+4. **Rulare:**
+
+    npm start
+
+   Aplicația va fi disponibilă la „http://127.0.0.1:5501/”.
