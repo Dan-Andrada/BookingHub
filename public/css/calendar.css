@@ -51,33 +51,33 @@
 
 .controls-wrapper {
   display: flex;
-  align-items: center; /* Alinează elementele vertical în centru */
-  justify-content: space-between; /* Distribuie spațiu între elemente */
-  padding: 10px; /* Adaugă un padding pentru spațiu în jurul elementelor */
-  border-bottom: 2px solid #ccc; /* Adaugă o linie sub controlere pentru a le separa vizual de restul conținutului */
-  background-color: #f0f0f0; /* Setează un fundal pentru a distinge zona de controlere */
+  align-items: center; 
+  justify-content: space-between; 
+  padding: 10px; 
+  border-bottom: 2px solid #ccc; 
+  background-color: #f0f0f0; 
 }
 
 
 .select-container {
   position: relative;
   overflow: hidden;
-  flex-grow: 1; /* Permite fiecărui container să crească și să ocupe spațiul disponibil */
-  margin: 0 10px; /* Adaugă un spațiu între butoane și selectoare */
+  flex-grow: 1; 
+  margin: 0 10px; 
 }
 
 .select-container select {
-  width: 100%; /* Asigură-te că select-ul ocupă întregul container */
-  padding: 8px 12px; /* Adaugă padding pentru a ușura interacțiunea */
-  border-radius: 6px; /* Adaugă border-radius pentru estetică */
-  border: 1px solid #ccc; /* Adaugă un border subtil */
+  width: 100%; 
+  padding: 8px 12px; 
+  border-radius: 6px; 
+  border: 1px solid #ccc; 
   font-size: 16px; 
 }
 
 .select-container select {
-  -webkit-appearance: none; /* Pentru Chrome și Safari */
-  -moz-appearance: none;    /* Pentru Firefox */
-  appearance: none;         /* Standard pentru celelalte browsere */
+  -webkit-appearance: none; 
+  -moz-appearance: none;    
+  appearance: none;        
 }
 
 .select-container::after {
@@ -99,12 +99,12 @@
 }
 
 #addEventButton {
-  padding: 10px 20px; /* Adaugă padding pentru un aspect mai plăcut și ușurința în utilizare */
-  background-color: #007bff; /* Setează o culoare de fundal */
-  color: white; /* Setează textul să fie alb pentru contrast */
-  border: none; /* Elimină border-ul */
-  border-radius: 4px; /* Rotunjește colțurile */
-  cursor: pointer; /* Schimbă cursorul pentru a indica posibilitatea de clic */
+  padding: 10px 20px; 
+  background-color: #007bff; 
+  color: white; 
+  border: none; 
+  border-radius: 4px; 
+  cursor: pointer;
   font-size: 16px; 
 }
 

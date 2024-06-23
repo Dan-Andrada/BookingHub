@@ -199,15 +199,13 @@ body {
 }
 
 #filterControls input {
-  flex-grow: 1; /* Asigură că inputul de căutare ocupă spațiul disponibil */
+  flex-grow: 1; 
 }
 
 #filterControls select {
-  width: auto; /* Ajustează în funcție de conținutul său */
+  width: auto;
 }
 
-
-/* Stil pentru listarea sălilor */
 .rooms-list {
   display: flex;
   flex-wrap: wrap;
@@ -220,8 +218,8 @@ body {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   padding: 20px;
   border-radius: 5px;
-  width: calc(33.333% - 20px); /* pentru 3 carduri pe rând */
-  margin-bottom: 20px; /* spațiu la partea de jos a fiecărui card */
+  width: calc(33.333% - 20px); 
+  margin-bottom: 20px; 
 }
 
 .room-card h2 {
@@ -235,7 +233,6 @@ body {
   margin: 5px 0;
 }
 
-/* Stilizare pentru butoane */
 .edit-btn,
 .delete-btn {
   cursor: pointer;
@@ -252,16 +249,15 @@ body {
   background-color: #dc3545;
 }
 
-/* Stil responsive pentru ecrane mici */
 @media (max-width: 768px) {
   .room-card {
-    width: calc(50% - 20px); /* pentru 2 carduri pe rând */
+    width: calc(50% - 20px); 
   }
 }
 
 @media (max-width: 480px) {
   .room-card {
-    width: 100%; /* pentru 1 card pe rând */
+    width: 100%; 
   }
 }
 

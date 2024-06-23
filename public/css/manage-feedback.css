@@ -23,8 +23,8 @@ h1, h2 {
 }
 
 .feedback-table-container {
-  max-height: 400px; /* Setează înălțimea maximă a tabelului */
-  overflow-y: auto; /* Permite derularea pe axa Y */
+  max-height: 400px; 
+  overflow-y: auto; 
   margin-bottom: 20px;
 }
 

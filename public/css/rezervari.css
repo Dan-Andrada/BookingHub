@@ -1,4 +1,3 @@
-/* General Styles */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f4f4f4;
@@ -27,7 +26,6 @@ h1, h2 {
     text-align: center;
 }
 
-/* Booking List Styles */
 .booking-list, .approval-list, .upcoming-events ul {
     list-style: none;
     padding: 0;
@@ -45,7 +43,6 @@ h1, h2 {
     align-items: center;
 }
 
-/* Button Styles */
 button {
     padding: 8px 16px;
     border: none;
@@ -113,7 +110,6 @@ button:hover {
     color: #333;
 }
 
-/* Stiluri generale pentru secțiunile de evenimente */
 .section-container {
     background: white;
     border-radius: 8px;
@@ -122,11 +118,10 @@ button:hover {
     margin-bottom: 20px;
 }
 
-/* Stiluri specifice pentru lista de evenimente viitoare */
 .upcoming-events {
     padding: 20px;
-    background-color: #f9f9f9; /* O nuanță ușor diferită pentru a distinge secțiunea */
-    border-left: 5px solid #4CAF50; /* Bară laterală pentru un accent vizual */
+    background-color: #f9f9f9; 
+    border-left: 5px solid #4CAF50; 
 }
 
 .upcoming-events h2 {
@@ -135,7 +130,6 @@ button:hover {
     margin-bottom: 15px;
 }
 
-/* Lista de evenimente viitoare */
 #upcomingEvents {
     list-style: none;
     padding: 0;
@@ -158,7 +152,6 @@ button:hover {
     box-shadow: 0 2px 5px rgba(0,0,0,0.15);
 }
 
-/* Detalii suplimentare pentru responsivitate și aliniere */
 @media (min-width: 768px) {
     .booking-container {
         display: flex;
@@ -167,7 +160,7 @@ button:hover {
     }
 
     .my-bookings, .upcoming-events {
-        flex: 1 1 48%; /* Ajustează procentul pentru a lăsa spațiu între coloane */
+        flex: 1 1 48%;
         margin-right: 20px;
     }
 
@@ -175,7 +168,7 @@ button:hover {
         clear: both;
         width: 100%;
         flex-basis: 100%;
-        order: 3; /* Asigură-te că cererile în așteptare sunt plasate la final */
+        order: 3; 
     }
 }
 
@@ -185,5 +178,5 @@ button:hover {
 }
 
 .decline-button:hover {
-    background-color: #e33126; /* A darker red for the hover state */
+    background-color: #e33126;
 }
