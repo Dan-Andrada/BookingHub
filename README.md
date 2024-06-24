@@ -1,7 +1,6 @@
 # UPT Booking Hub
 
-UPT Booking Hub este o aplicație web pentru gestionarea rezervărilor sălilor în cadrul Universității Politehnica Timișoara.
-
+UPT Booking Hub este o aplicație web pentru gestionarea rezervărilor sălilor în cadrul Facultății de Automatică și Calculatoare (UPT).
 ## Caracteristici
 - Autentificare și autorizare a utilizatorilor
 - Rezervări unice și recurente
